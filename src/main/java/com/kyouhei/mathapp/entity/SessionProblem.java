@@ -33,7 +33,7 @@ public class SessionProblem {
 	private Choice SelectedChoiceId;
 	
 	@Column(name="is_correct")
-	private boolean isCorrect;
+	private Boolean isCorrect;
 	
 	
 }
