@@ -24,7 +24,6 @@ public class TestSessionService {
 	private SessionProblemRepository sessionProblemRepository;
 	
 	public TestSession createTestSession(Long userId,boolean includeIntegers) {
-		
 		//TestSessionを作成しDBに保存
 		TestSession session=new TestSession();
 		session.setUserId(userId);
@@ -57,5 +56,9 @@ public class TestSessionService {
         session.setSessionProblems(sessionProblems);
         return session;
     }
+	
+	public List<SessionProblem> getSessionProblems(Long sessionId){
+		return sessionProblemRepository.findByTestSessionId(sessionId);
+	}
 }
 			

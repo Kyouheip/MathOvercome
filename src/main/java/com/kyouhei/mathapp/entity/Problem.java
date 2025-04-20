@@ -1,6 +1,7 @@
 package com.kyouhei.mathapp.entity;
 
-import java.awt.Choice;
+
+
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
