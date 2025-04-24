@@ -3,11 +3,14 @@ package com.kyouhei.mathapp.controller;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.kyouhei.mathapp.entity.Choice;
 import com.kyouhei.mathapp.entity.SessionProblem;
@@ -50,48 +53,73 @@ public class TestSessionController {
 	public ModelAndView viewTestSession(
 				@PathVariable Long sessionId,
 				ModelAndView mv) {
+		
 		mv.setViewName("testSession");
 		mv.addObject("sessionId",sessionId);
 		
 		return mv;
 	}
 	
-	//テストセッションの全ての問題表示
-	@GetMapping("/session/{sessionId}/problems")
-	public ModelAndView viewSessionProblems(
+	//テストセッションの問題を1問ずつ表示
+	@GetMapping("/session/{sessionId}/problem")
+	public String viewoneProblem(
 				@PathVariable Long sessionId,
-				ModelAndView mv) {
-		List<SessionProblem> sessionProblems=
+				@RequestParam(defaultValue="0") int idx,
+				Model model,
+				RedirectAttributes redirectAttributes){
+		
+		List<SessionProblem> sps=
 								testSessionService.getSessionProblems(sessionId);
 		
-		mv.setViewName("problems");
-		mv.addObject("sessionProblems",sessionProblems);
+		//問題終了時、完了ページへ
+//sessionIdをattributeしていない
+		if(idx>=sps.size()) {
+			redirectAttributes.addFlashAttribute("sps",sps);
+			return "redirect:/session/"+sessionId+"/summary";
+		}
 		
-		return mv;
+		SessionProblem sp=sps.get(idx);
+		
+		model.addAttribute("sp",sp);
+		model.addAttribute("idx",idx);
+		model.addAttribute("max",sps.size());
+		
+		return "problem";
 	}
 	
-	//ある問題に対して選択肢を選んだ場合
+	
+	
+	//解答を受け取り次の問題へ
 	@PostMapping("/session/{sessionId}/problem/{sessionProblemId}/answer")
 //値の受け取り方再度確認
-	public String submitAnswer(
+	public String submitAndNext(
 				@PathVariable Long sessionId,
 				@PathVariable Long sessionProblemId,
-				@RequestParam Long selectedChoiceId) {
+				@RequestParam Long selectedChoiceId,
+				@RequestParam int idx) {
 		
-		SessionProblem sessionProblem=
+		//解答を保存
+		SessionProblem sp=
 				sessionProblemRepository.findById(sessionProblemId).orElse(null);
-//nullcheck必要か確認
-		if(sessionProblem==null)
-			return "redirect:/session/"+sessionId+"/problems";
-		
+
 		Choice userChoice=choiceRepository.findById(selectedChoiceId).orElse(null);
 		
-		sessionProblem.setSelectedChoiceId(userChoice);
-		sessionProblem.setIsCorrect(userChoice.isCorrect());
+		sp.setSelectedChoiceId(userChoice);
+		sp.setIsCorrect(userChoice.isCorrect());
 		
-		sessionProblemRepository.save(sessionProblem);
+		sessionProblemRepository.save(sp);
 		
-		return "redirect:/session/"+sessionId+"/problems";
+		
+		//次の問題へリダイレクト
+		return "redirect:/session/"+sessionId+"/problem?idx="+(idx+1);
 		
 	}
+	
+	@GetMapping("/session/{sessionId}/summary")
+	public String viewSummary(@PathVariable Long sessionId,
+							@ModelAttribute List<SessionProblem> sps) {
+		
+		return "mypage";
+	}
+	
 }

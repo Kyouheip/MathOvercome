@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>問題 [[${idx+1}]]/[[${max}]]</title>
+</head>
+<body>
+	<h2>問題 [[${idx+1}]]/[[${max}]]</h2>
+	
+	<!--問題-->
+	<p th:text="${sp.problem.question}"></p>
+	
+	<!--選択フォーム-->
+	<form th:action="@{'/session/'+${sp.testSession.id}+
+						'/problem+${sp.id}+'/anser'}" method="post"
+						th:object="${sp}">
+		<input type="hidden" name="idx" th:value="${idx}"/>
+		<div th:each="choice : *{problem.choices}" >
+			<label>
+			 <input type="radio" th:field="*{selectedChoiceId}" 
+			 		th:value="${choice.id}" required />
+					<span th:text="${choice.choiceText}"></span>
+			</label>
+		</div>
+		<button type="submit">次へ</button>	
+	</form>
+	
+	<!--解答済みの場合正誤表示
+	<div th:if="${sp.isCorrect != null}">
+					<p th:text="${sp.isCorrect ? '正解！' : '不正解'}"
+						th:style="${sp.isCorrect ? 'color:green;' : 'color:red;">
+					</p>
+				</div>-->
+</body>
+</html>

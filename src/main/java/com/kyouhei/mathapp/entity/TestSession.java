@@ -10,6 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 
 import lombok.Data;
@@ -35,6 +36,7 @@ public class TestSession {
 	private LocalDateTime startTime=LocalDateTime.now();
 	
 	@OneToMany(mappedBy="testSession",cascade=CascadeType.ALL)
+	@OrderBy("id ASC")
 	private List<SessionProblem> sessionProblems;
 	
 }
