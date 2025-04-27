@@ -5,17 +5,18 @@
 <title>Iマイページ</title>
 </head>
 <body>
+<a th:href="@{/logout}">ログアウト</a>
 <h1>テスト完了</h1>
 <table>
-	<tr th:each="sp : ${sessionProblems">
+	<tr th:each="sp : ${sessionProblems}">
 		<td th:text="${sp.problem.id}"></td>
 		<td th:text="${sp.isCorrect ? '正解' : '不正解'}"></td>
 	</tr>
 </table>
-<p>
+<!--<p>
 正答率： <span th:text="${#numbers.formatDecimal(sps.?
 		[isCorrect == true].size() * 100.0 / sessionProblems.size(), 
 		1, 2)}"></span>% 
-</p>
+</p>-->
 </body>
 </html>

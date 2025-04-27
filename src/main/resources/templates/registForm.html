@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>新規登録</title>
+</head>
+<body>
+<form th;action="@{/regidt/do}" method="post" th:object="${registData}">
+	<h3>新規登録</h3>
+	<table>
+		<tr>
+			<th>ID</th>
+			<td>
+				<input type="text" th:field="*{userId}"/>
+				<div th:if="${#fields.hasErrors('userId')}"
+								th:errors="*{userId}" 
+								th:errorclass="red"></div>
+			</td>
+		</tr>
+		<tr>
+			<th>ユーザー名</th>
+			<td>
+				<input type="text" th:field="*{userName}">
+				<div th:if="${#fields.hasErrors('userId')}"
+							th:errors="*{userId}" 
+							th:errorclass="red"></div>
+			</td>
+		</tr>
+		<tr>
+			<th>パスワード</th>
+			<td>
+				<input type="password" name="password1"/>
+				<div th:if="${#fields.hasErrors('password1')}"
+							th:errors="*{password1}" 
+							th:errorclass="red"></div>
+			</td>
+		</tr>
+		<tr>
+			<th>パスワード確認</th>
+			<td>
+				<input type="password" name="password2"/>
+				<div th:if="${#fields.hasErrors('password2')}"
+							th:errors="*{password2}" 
+							th:errorclass="red"></div>
+			</td>
+		</tr>
+	</table>
+	<button type="submit">登録</button>
+	<a th:href="@{/regist/cancel}">戻る</a>
+</form>
+</body>
+</html>

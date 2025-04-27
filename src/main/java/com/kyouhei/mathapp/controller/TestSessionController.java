@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.kyouhei.mathapp.entity.Choice;
@@ -45,19 +44,7 @@ public class TestSessionController {
 		TestSession session=
 				testSessionService.createTestSession(userId,includeIntegers);
 		
-		return "redirect:/session/"+session.getId();
-	}
-	
-	//テストセッションのID表示
-	@GetMapping("/session/{sessionId}")
-	public ModelAndView viewTestSession(
-				@PathVariable Long sessionId,
-				ModelAndView mv) {
-		
-		mv.setViewName("testSession");
-		mv.addObject("sessionId",sessionId);
-		
-		return mv;
+		return "redirect:/session/"+session.getId()+"/problem";
 	}
 	
 	//テストセッションの問題を1問ずつ表示
@@ -104,7 +91,7 @@ public class TestSessionController {
 
 		Choice userChoice=choiceRepository.findById(selectedChoiceId).orElse(null);
 		
-		sp.setSelectedChoiceId(userChoice);
+		sp.setSelectedChoice(userChoice);
 		sp.setIsCorrect(userChoice.isCorrect());
 		
 		sessionProblemRepository.save(sp);

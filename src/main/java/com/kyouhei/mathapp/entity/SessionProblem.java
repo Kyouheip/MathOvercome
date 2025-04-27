@@ -30,7 +30,7 @@ public class SessionProblem {
 	
 	@ManyToOne
 	@JoinColumn(name="selected_choice_id")
-	private Choice selectedChoiceId;
+	private Choice selectedChoice;
 	
 	@Column(name="is_correct")
 	private Boolean isCorrect;

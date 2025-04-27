@@ -12,13 +12,15 @@
 	
 	<!--選択フォーム-->
 	<form th:action="@{'/session/'+${sp.testSession.id}+
-						'/problem+${sp.id}+'/anser'}" method="post"
-						th:object="${sp}">
+						'/problem/'+${sp.id}+'/answer'}" method="post">
 		<input type="hidden" name="idx" th:value="${idx}"/>
-		<div th:each="choice : *{problem.choices}" >
+		<div th:each="choice : ${sp.problem.choices}" >
 			<label>
-			 <input type="radio" th:field="*{selectedChoiceId}" 
-			 		th:value="${choice.id}" required />
+			 <input type="radio" name="selectedChoiceId" 
+			 	th:value="${choice.id}" 
+			 	th:checked="${sp.selectedChoice != null and 
+					choice.id == sp.selectedChoice.id}"
+				required />
 					<span th:text="${choice.choiceText}"></span>
 			</label>
 		</div>

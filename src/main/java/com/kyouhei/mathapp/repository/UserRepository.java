@@ -1,16 +1,14 @@
 package com.kyouhei.mathapp.repository;
 
-import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.kyouhei.mathapp.entity.TestSession;
 import com.kyouhei.mathapp.entity.User;
 
 @Repository
-public interface TestSessionRepository extends JpaRepository<TestSession,Long>{
+public interface UserRepository extends JpaRepository<User,Long> {
 
-	List<TestSession> findByUser(User user);
-	
+	Optional<User> findByUserId(String userId);
 }
