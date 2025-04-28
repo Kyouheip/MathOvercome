@@ -10,7 +10,7 @@
 	<table>
 		<tr>
 			<th>ID</th>
-			<td><input type="text" name="loginId"/>
+			<td><input type="text" th:field="*{loginId}"/>
 				<div th:if="${#fields.hasErrors('loginId')}"
 				th:errors="*{loginId}" th:errorclass="red"></div>
 			</td>
@@ -18,15 +18,15 @@
 		<tr>
 			<th>パスワード</th>
 			<td>
-				<inut type="password" name="password"/>
+				<input type="password" th:field="*{password}"/>
 				<div th:if="${#fields.hasErrors('password')}"
-				th:eerors="*{password}" th:errorclass="red"></div>
+				th:errors="*{password}" th:errorclass="red"></div>
 			</td>
 		</tr>
 	</table>
 	<button type="submit">ログイン</button>
 	
-	<a th:href="@{/regist)">新規登録</a>
+	<a th:href="@{/regist}">新規登録</a>
 </form>
 </body>
 </html>

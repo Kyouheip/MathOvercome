@@ -2,6 +2,8 @@ package com.kyouhei.mathapp.controller;
 
 import java.util.List;
 
+import jakarta.servlet.http.HttpSession;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,8 +16,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.kyouhei.mathapp.entity.Choice;
 import com.kyouhei.mathapp.entity.SessionProblem;
 import com.kyouhei.mathapp.entity.TestSession;
+import com.kyouhei.mathapp.entity.User;
 import com.kyouhei.mathapp.repository.ChoiceRepository;
 import com.kyouhei.mathapp.repository.SessionProblemRepository;
+import com.kyouhei.mathapp.repository.UserRepository;
 import com.kyouhei.mathapp.service.TestSessionService;
 
 import lombok.AllArgsConstructor;
@@ -28,21 +32,17 @@ public class TestSessionController {
 //Serviceクラス検討
 	private SessionProblemRepository sessionProblemRepository;
 	private ChoiceRepository choiceRepository;
-	
-	//テスト開始フォーム
-	@GetMapping("/start")
-	public String startTestForm() {
-		return "startTest";
-	}
+	private HttpSession session;
+	private UserRepository userRepository;
 	
 	//テストセッション作成
 	@PostMapping("/start")
 	public String createTestSession(
-				@RequestParam Long userId,
 				@RequestParam(defaultValue="false")boolean includeIntegers) {
 		
+		User user=(User)session.getAttribute("user");
 		TestSession session=
-				testSessionService.createTestSession(userId,includeIntegers);
+				testSessionService.createTestSession(user,includeIntegers);
 		
 		return "redirect:/session/"+session.getId()+"/problem";
 	}
@@ -104,8 +104,11 @@ public class TestSessionController {
 	
 	@GetMapping("/session/{sessionId}/summary")
 	public String viewSummary(@PathVariable Long sessionId,
-							@ModelAttribute List<SessionProblem> sps) {
-		
+								@ModelAttribute List<SessionProblem> sps,
+								HttpSession session) {
+		User user=(User)session.getAttribute("user");
+		user=userRepository.findByUserId(user.getUserId()).get();
+		session.setAttribute("user",user);
 		return "mypage";
 	}
 	

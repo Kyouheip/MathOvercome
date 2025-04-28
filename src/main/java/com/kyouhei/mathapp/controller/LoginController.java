@@ -41,7 +41,7 @@ public class LoginController {
 						BindingResult result,
 						Model model) {
 		//バリデーション、サービスチェック
-		if(result.hasErrors()|| !loginService.isValid(loginData,result)) 
+		if(result.hasErrors()|| !loginService.isValid(loginData,result))
 			return "loginForm";
 		
 		//セッションクリア
@@ -49,7 +49,7 @@ public class LoginController {
 		
 		//userIdをセッションへ格納
 		User user=userRepository.findByUserId(loginData.getLoginId()).get();
-		session.setAttribute("userId",user.getId());
+		session.setAttribute("user",user);
 		
 		return "mypage";
 	}
@@ -70,12 +70,13 @@ public class LoginController {
 	}
 	
 	//ユーザー新規登録・登録ボタンが押されたとき
+	@PostMapping("/regist/do")
 	public String registNewUser(@ModelAttribute @Validated
 								RegistData registData,
 								BindingResult result,
 								Model model) {
 		//バリデーション、サービスチェック
-		if(result.hasErrors() || loginService.isValid(registData,result))
+		if(result.hasErrors() || !loginService.isValid(registData,result))
 			return "registForm";
 			
 		//ユーザー登録
@@ -87,6 +88,7 @@ public class LoginController {
 	}
 	
 	//ユーザー新規登録・戻るボタン
+	@GetMapping("/regist/cancel")
 	public String registCancel() {
 		return "redirect:/login";
 	}

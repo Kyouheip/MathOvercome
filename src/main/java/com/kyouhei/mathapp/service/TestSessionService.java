@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.kyouhei.mathapp.entity.Problem;
 import com.kyouhei.mathapp.entity.SessionProblem;
 import com.kyouhei.mathapp.entity.TestSession;
+import com.kyouhei.mathapp.entity.User;
 import com.kyouhei.mathapp.repository.ProblemRepository;
 import com.kyouhei.mathapp.repository.SessionProblemRepository;
 import com.kyouhei.mathapp.repository.TestSessionRepository;
@@ -23,12 +24,12 @@ public class TestSessionService {
 	private ProblemRepository problemRepository;
 	private SessionProblemRepository sessionProblemRepository;
 	
-	public TestSession createTestSession(Long userId,boolean includeIntegers) {
+	public TestSession createTestSession(User user,boolean includeIntegers) {
 		//TestSessionを作成しDBに保存
 		TestSession session=new TestSession();
-		session.setUserId(userId);
+		session.setUser(user);
 		session.setIncludeIntegers(includeIntegers);
-		testSessionRepository.save(session);
+		testSessionRepository.saveAndFlush(session);
 		
 		/*出題数を決定
 			整数分野を含む:カテゴリ1～７から出題
