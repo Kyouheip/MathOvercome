@@ -1,16 +1,17 @@
 package com.kyouhei.mathapp.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.kyouhei.mathapp.entity.Choice;
@@ -19,6 +20,7 @@ import com.kyouhei.mathapp.entity.TestSession;
 import com.kyouhei.mathapp.entity.User;
 import com.kyouhei.mathapp.repository.ChoiceRepository;
 import com.kyouhei.mathapp.repository.SessionProblemRepository;
+import com.kyouhei.mathapp.repository.TestSessionRepository;
 import com.kyouhei.mathapp.repository.UserRepository;
 import com.kyouhei.mathapp.service.TestSessionService;
 
@@ -26,17 +28,18 @@ import lombok.AllArgsConstructor;
 
 @Controller
 @AllArgsConstructor
+@RequestMapping("/session")
 public class TestSessionController {
 
 	private TestSessionService testSessionService;
-//Serviceクラス検討
 	private SessionProblemRepository sessionProblemRepository;
 	private ChoiceRepository choiceRepository;
 	private HttpSession session;
 	private UserRepository userRepository;
+	private TestSessionRepository testSessionRepository;
 	
 	//テストセッション作成
-	@PostMapping("/start")
+	@PostMapping("/test")
 	public String createTestSession(
 				@RequestParam(defaultValue="false")boolean includeIntegers) {
 		
@@ -48,64 +51,94 @@ public class TestSessionController {
 	}
 	
 	//テストセッションの問題を1問ずつ表示
-	@GetMapping("/session/{sessionId}/problem")
-	public String viewoneProblem(
+	@GetMapping("/{sessionId}/problem")
+	public ModelAndView viewoneProblem(
 				@PathVariable Long sessionId,
 				@RequestParam(defaultValue="0") int idx,
-				Model model,
+				ModelAndView mv,
 				RedirectAttributes redirectAttributes){
 		
-		List<SessionProblem> sps=
-								testSessionService.getSessionProblems(sessionId);
+		User user=(User)session.getAttribute("user");
 		
-		//問題終了時、完了ページへ
-//sessionIdをattributeしていない
-		if(idx>=sps.size()) {
+		Optional<TestSession> someTestSess=
+						testSessionRepository.findById(sessionId);
+		
+		someTestSess.ifPresentOrElse(ts->{
+		
+		 if(ts.getUser().getId().equals(user.getId())){
+				//ログインIDと一致。通常処理
+			List<SessionProblem> sps=
+					testSessionService.getSessionProblems(sessionId);
+
+			//問題終了時、完了ページへ
+			if(idx>=sps.size()) {
 			redirectAttributes.addFlashAttribute("sps",sps);
-			return "redirect:/session/"+sessionId+"/summary";
-		}
-		
-		SessionProblem sp=sps.get(idx);
-		
-		model.addAttribute("sp",sp);
-		model.addAttribute("idx",idx);
-		model.addAttribute("max",sps.size());
-		
-		return "problem";
+			mv.setViewName("redirect:/session/mypage");
+			}else {
+			SessionProblem sp=sps.get(idx);
+			
+			mv.addObject("sp",sp);
+			mv.addObject("idx",idx);
+			mv.addObject("max",sps.size());
+			mv.setViewName("problem");
+			}
+		 }else{
+			 //ログインIDと一致しない
+			 testSessionService.registError(mv,"ログインIDと一致しません。");
+		 }
+		},()->{
+		 	//テストセッションが存在しない
+			testSessionService.registError(mv, "テストセッションが存在しません");
+		 });
+			
+		return mv;
 	}
 	
-	
-	
 	//解答を受け取り次の問題へ
-	@PostMapping("/session/{sessionId}/problem/{sessionProblemId}/answer")
+	@PostMapping("/{sessionId}/problem/{sessionProblemId}/answer")
 //値の受け取り方再度確認
-	public String submitAndNext(
+	public ModelAndView submitAndNext(
 				@PathVariable Long sessionId,
 				@PathVariable Long sessionProblemId,
 				@RequestParam Long selectedChoiceId,
-				@RequestParam int idx) {
+				@RequestParam int idx,
+				ModelAndView mv) {
 		
-		//解答を保存
-		SessionProblem sp=
-				sessionProblemRepository.findById(sessionProblemId).orElse(null);
-
-		Choice userChoice=choiceRepository.findById(selectedChoiceId).orElse(null);
+		User user=(User)session.getAttribute("user");
 		
-		sp.setSelectedChoice(userChoice);
-		sp.setIsCorrect(userChoice.isCorrect());
+		Optional<SessionProblem> someSessProb=
+					sessionProblemRepository.findById(sessionProblemId);
 		
-		sessionProblemRepository.save(sp);
+		someSessProb.ifPresentOrElse(sp->{
+			if(sp.getTestSession().getId().equals(sessionId)&&
+				sp.getTestSession().getUser().getId().equals(user.getId())){
+				//自分のsessionであり、sessionIdが一致。通常処理
+				
+				//解答を保存
+				Choice userChoice=choiceRepository.findById(selectedChoiceId).orElse(null);
+				sp.setSelectedChoice(userChoice);
+				sp.setIsCorrect(userChoice.isCorrect());
+				
+				sessionProblemRepository.save(sp);
+				
+				//次の問題へリダイレクト
+				mv.setViewName("redirect:/session/"+sessionId+"/problem?idx="+(idx+1));
+			}else {
+				//ログインID不一致
+				testSessionService.registError(mv,"ログインIDと不一致または"
+						+ "問題がテストセッションのものではありません。");
+			}
+		},()->{
+			//セッション問題が存在しない
+			testSessionService.registError(mv,"問題が存在しません。");
+			
+			});
 		
-		
-		//次の問題へリダイレクト
-		return "redirect:/session/"+sessionId+"/problem?idx="+(idx+1);
-		
+		return mv;
 	}
 	
-	@GetMapping("/session/{sessionId}/summary")
-	public String viewSummary(@PathVariable Long sessionId,
-								@ModelAttribute List<SessionProblem> sps,
-								HttpSession session) {
+	@GetMapping("/mypage")
+	public String viewMypage() {
 		User user=(User)session.getAttribute("user");
 		user=userRepository.findByUserId(user.getUserId()).get();
 		session.setAttribute("user",user);

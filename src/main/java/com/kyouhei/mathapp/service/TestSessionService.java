@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.kyouhei.mathapp.entity.Problem;
 import com.kyouhei.mathapp.entity.SessionProblem;
@@ -60,6 +61,11 @@ public class TestSessionService {
 	
 	public List<SessionProblem> getSessionProblems(Long sessionId){
 		return sessionProblemRepository.findByTestSessionId(sessionId);
+	}
+	
+	public void registError(ModelAndView mv,String msg){
+		mv.setViewName("error");
+		mv.addObject("msg",msg);
 	}
 }
 			
