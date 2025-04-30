@@ -22,7 +22,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class LoginController {
 
-	private UserRepository userRepository;
+	private UserRepository userRepo;
 	private LoginService loginService;
 	private HttpSession session;
 	
@@ -48,7 +48,7 @@ public class LoginController {
 		session.invalidate();
 		
 		//userIdをセッションへ格納
-		User user=userRepository.findByUserId(loginData.getLoginId()).get();
+		User user=userRepo.findByUserId(loginData.getLoginId()).get();
 		session.setAttribute("user",user);
 		
 		return "mypage";
@@ -81,7 +81,7 @@ public class LoginController {
 			
 		//ユーザー登録
 		User user=registData.toEntity();
-		userRepository.saveAndFlush(user);
+		userRepo.saveAndFlush(user);
 		
 		return "redirect:/login";
 		

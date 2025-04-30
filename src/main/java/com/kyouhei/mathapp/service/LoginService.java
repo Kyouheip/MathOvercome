@@ -17,7 +17,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class LoginService {
 
-	private UserRepository userRepository;
+	private UserRepository userRepo;
 	
 	//このクラスで使うためだけのエラー追加メソッド
 	public void addError(BindingResult result){
@@ -32,7 +32,7 @@ public class LoginService {
 	public boolean isValid(LoginData loginData,BindingResult result) {
 		
 		//ログインiDが登録されているか
-		Optional<User> user=userRepository.findByUserId(loginData.getLoginId());
+		Optional<User> user=userRepo.findByUserId(loginData.getLoginId());
 		if(user.isEmpty()) {
 			addError(result);
 			return false;
@@ -59,7 +59,7 @@ public class LoginService {
 		}
 		
 		//ログインIDがすでに登録済かどうか
-		Optional<User> user=userRepository.findByUserId(registData.getUserId());
+		Optional<User> user=userRepo.findByUserId(registData.getUserId());
 		if(user.isPresent()) {
 			FieldError fieldError=new FieldError(
 					result.getObjectName(),

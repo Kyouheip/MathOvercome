@@ -21,16 +21,16 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class TestSessionService {
 
-	private TestSessionRepository testSessionRepository;
-	private ProblemRepository problemRepository;
-	private SessionProblemRepository sessionProblemRepository;
+	private TestSessionRepository testSessRepo;
+	private ProblemRepository probRepo;
+	private SessionProblemRepository sessProbRepo;
 	
-	public TestSession createTestSession(User user,boolean includeIntegers) {
+	public TestSession createTestSess(User user,boolean includeIntegers) {
 		//TestSessionを作成しDBに保存
 		TestSession session=new TestSession();
 		session.setUser(user);
 		session.setIncludeIntegers(includeIntegers);
-		testSessionRepository.saveAndFlush(session);
+		testSessRepo.saveAndFlush(session);
 		
 		/*出題数を決定
 			整数分野を含む:カテゴリ1～７から出題
@@ -44,7 +44,7 @@ public class TestSessionService {
 		List<SessionProblem> sessionProblems=new ArrayList<>();
 		for(Integer cateId:categories) {
 //全てのカテゴリの問題をもってくるため改善余地あり
-			List<Problem> problems=problemRepository.findByCategoryId(cateId);
+			List<Problem> problems=probRepo.findByCategoryId(cateId);
 			Collections.shuffle(problems);
 			for(int i=0;i<2;i++) {
 				SessionProblem sp=new SessionProblem();
@@ -54,13 +54,13 @@ public class TestSessionService {
             }
         }
         //SessionProblemをDBに保存、TestSessionのフィールドに代入
-        sessionProblemRepository.saveAll(sessionProblems);
+        sessProbRepo.saveAll(sessionProblems);
         session.setSessionProblems(sessionProblems);
         return session;
     }
 	
 	public List<SessionProblem> getSessionProblems(Long sessionId){
-		return sessionProblemRepository.findByTestSessionId(sessionId);
+		return sessProbRepo.findByTestSessionId(sessionId);
 	}
 	
 	public void registError(ModelAndView mv,String msg){

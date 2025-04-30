@@ -31,28 +31,28 @@ import lombok.AllArgsConstructor;
 @RequestMapping("/session")
 public class TestSessionController {
 
-	private TestSessionService testSessionService;
-	private SessionProblemRepository sessionProblemRepository;
-	private ChoiceRepository choiceRepository;
+	private TestSessionService testSessService;
+	private SessionProblemRepository sessProbRepo;
+	private ChoiceRepository choiceRepo;
 	private HttpSession session;
-	private UserRepository userRepository;
-	private TestSessionRepository testSessionRepository;
+	private UserRepository userRepo;
+	private TestSessionRepository testSessRepo;
 	
 	//テストセッション作成
 	@PostMapping("/test")
-	public String createTestSession(
+	public String createTestSess(
 				@RequestParam(defaultValue="false")boolean includeIntegers) {
 		
 		User user=(User)session.getAttribute("user");
 		TestSession session=
-				testSessionService.createTestSession(user,includeIntegers);
+				testSessService.createTestSess(user,includeIntegers);
 		
 		return "redirect:/session/"+session.getId()+"/problem";
 	}
 	
 	//テストセッションの問題を1問ずつ表示
 	@GetMapping("/{sessionId}/problem")
-	public ModelAndView viewoneProblem(
+	public ModelAndView viewOneProblem(
 				@PathVariable Long sessionId,
 				@RequestParam(defaultValue="0") int idx,
 				ModelAndView mv,
@@ -61,14 +61,14 @@ public class TestSessionController {
 		User user=(User)session.getAttribute("user");
 		
 		Optional<TestSession> someTestSess=
-						testSessionRepository.findById(sessionId);
+						testSessRepo.findById(sessionId);
 		
 		someTestSess.ifPresentOrElse(ts->{
 		
 		 if(ts.getUser().getId().equals(user.getId())){
 				//ログインIDと一致。通常処理
 			List<SessionProblem> sps=
-					testSessionService.getSessionProblems(sessionId);
+					testSessService.getSessionProblems(sessionId);
 
 			//問題終了時、完了ページへ
 			if(idx>=sps.size()) {
@@ -84,11 +84,11 @@ public class TestSessionController {
 			}
 		 }else{
 			 //ログインIDと一致しない
-			 testSessionService.registError(mv,"ログインIDと一致しません。");
+			 testSessService.registError(mv,"ログインIDと一致しません。");
 		 }
 		},()->{
 		 	//テストセッションが存在しない
-			testSessionService.registError(mv, "テストセッションが存在しません");
+			testSessService.registError(mv, "テストセッションが存在しません");
 		 });
 			
 		return mv;
@@ -107,7 +107,7 @@ public class TestSessionController {
 		User user=(User)session.getAttribute("user");
 		
 		Optional<SessionProblem> someSessProb=
-					sessionProblemRepository.findById(sessionProblemId);
+					sessProbRepo.findById(sessionProblemId);
 		
 		someSessProb.ifPresentOrElse(sp->{
 			if(sp.getTestSession().getId().equals(sessionId)&&
@@ -115,22 +115,22 @@ public class TestSessionController {
 				//自分のsessionであり、sessionIdが一致。通常処理
 				
 				//解答を保存
-				Choice userChoice=choiceRepository.findById(selectedChoiceId).orElse(null);
+				Choice userChoice=choiceRepo.findById(selectedChoiceId).orElse(null);
 				sp.setSelectedChoice(userChoice);
 				sp.setIsCorrect(userChoice.isCorrect());
 				
-				sessionProblemRepository.save(sp);
+				sessProbRepo.save(sp);
 				
 				//次の問題へリダイレクト
 				mv.setViewName("redirect:/session/"+sessionId+"/problem?idx="+(idx+1));
 			}else {
 				//ログインID不一致
-				testSessionService.registError(mv,"ログインIDと不一致または"
+				testSessService.registError(mv,"ログインIDと不一致または"
 						+ "問題がテストセッションのものではありません。");
 			}
 		},()->{
 			//セッション問題が存在しない
-			testSessionService.registError(mv,"問題が存在しません。");
+			testSessService.registError(mv,"問題が存在しません。");
 			
 			});
 		
@@ -140,7 +140,7 @@ public class TestSessionController {
 	@GetMapping("/mypage")
 	public String viewMypage() {
 		User user=(User)session.getAttribute("user");
-		user=userRepository.findByUserId(user.getUserId()).get();
+		user=userRepo.findByUserId(user.getUserId()).get();
 		session.setAttribute("user",user);
 		return "mypage";
 	}
