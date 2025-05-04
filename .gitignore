@@ -64,3 +64,4 @@ target/
 ### Eclipse ###
 .metadata/
 .recommenders/
+node_modules/
