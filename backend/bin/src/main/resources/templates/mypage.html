@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>マイページ</title>
+</head>
+<body>
+<h3 th:text="'ようこそ'+${session.user.userName}+'さん'"></h3>
+<a th:href="@{/logout}">ログアウト</a>
+
+<form th:action="@{/session/test}" method="post">
+	<h1>テスト開始</h1>
+	<label for="includeIntegers">
+		<input type="checkbox" id="includeIntegers" name="includeIntegers">
+		整数分野も含める</label>
+	<button type="submit">開始</button>
+</form>
+
+<h1 th:if="${session.user.testSessions != null and 
+	!session.user.testSessions.isEmpty()}">最近のテスト結果</h1>
+<div th:each="ts : ${session.user.testSessions}">
+	<p th:text="${ts.startTime}"></p>
+<table>
+
+	<thead>
+		<tr>
+			<th>問題ID</th>
+			<th>選択肢</th>
+			<th>正誤</th>
+		</tr>
+	</thead>
+	<tbody>
+	<tr th:each="sp : ${ts.sessionProblems}">
+		<td th:text="${sp.problem.id}"></td>
+		<td th:text="${sp.selectedChoice.choiceText}"></td>
+		<td th:text="${sp.isCorrect ? '正解' : '不正解'}"></td>
+	</tr>
+	</tbody>
+</table>
+</div>
+<!--<p>
+正答率： <span th:text="${#numbers.formatDecimal(sps.?
+		[isCorrect == true].size() * 100.0 / sessionProblems.size(), 
+		1, 2)}"></span>% 
+</p>-->
+</body>
+</html>

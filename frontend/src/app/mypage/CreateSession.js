@@ -19,7 +19,7 @@ export default function CreateSession(){
         }
         
         const session = await res.json();
-        console.log('APIレスポンス:', text);
+        console.log('APIレスポンス:', session);
 
         router.push(`/session/${session.id}/problems`);
     };

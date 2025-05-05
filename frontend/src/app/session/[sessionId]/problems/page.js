@@ -22,8 +22,7 @@ export default async function ProblemPage({params}){
         <ul>
             {problems.map(sp=>(
                 <li key={sp.id}>
-                    ID:{sp.problem.id}
-                    問題:{sp.problem.question}
+                    問題:{sp.question}
                 </li>
             ))}
         </ul>
