@@ -1,11 +1,11 @@
 //session/[sessionId]/problems
-import React from `react`
+import React from 'react'
 
 export default async function ProblemPage({params}){
     const {sessionId} = params;
 
     const res=await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/session/${sessionId}/problems`,
+        `${process.env.NEXT_PUBLIC_API_URL}/session/${sessionId}/problems`,
         {cache: "no-store"}
     );
 
