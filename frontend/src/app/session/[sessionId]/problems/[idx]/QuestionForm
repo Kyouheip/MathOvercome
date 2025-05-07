@@ -1,0 +1,56 @@
+//session/[sessionId]/problems/[idx]/QuestionForm.js
+'use client'
+import {useState} from 'react'
+import { useRouter } from 'next/router'
+
+export default function QuestionForm({sessionId,idx,sessProbId,choiceTexts,total}){
+    const [selectedId,setSelectedId] = useState(null);
+    const router = useRouter();
+
+    const submit = async (e) => {
+        e.preventDefault();
+
+        if(!selected){
+            alert("選択肢を選んでください")
+            return;
+        }
+
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/session/${sessionId}/problems/${idx}/answer`,
+            {
+                method: "post",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({selectedChoiceId: selected})
+            }
+        );
+
+        if(!res.ok){
+            alert("送信に失敗しました(${res.status})");
+            return ;
+        }
+
+        const nextIdx = idx+1;
+        if(nextIdx < total){
+            router.push(`/session/${sessionId}/problems/${nextIdx}`)
+        } else{
+            router.push(`/mypage`)
+        }
+    };
+
+    return(
+        <form onSubmit={submit}>
+            {choices.map(c => (
+                <label key={c.id}>
+                    <input
+                     type="radio"
+                     onChange={() => setSelectedId(c.id)}
+                     />
+                     {c.choiceText}
+                </label>
+                    )
+                )
+            }
+            <button type="submit">次へ</button>
+        </form>
+    );
+}

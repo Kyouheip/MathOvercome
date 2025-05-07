@@ -1,4 +1,4 @@
-//session/[sessionId]/problems
+//session/[sessionId]/problems/page.js
 import React from 'react'
 
 export default async function ProblemPage({params}){
