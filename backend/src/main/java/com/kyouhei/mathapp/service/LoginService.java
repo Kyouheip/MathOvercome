@@ -6,9 +6,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
+import com.kyouhei.mathapp.dto.LoginRequest;
+import com.kyouhei.mathapp.dto.RegisterRequest;
 import com.kyouhei.mathapp.entity.User;
-import com.kyouhei.mathapp.form.LoginData;
-import com.kyouhei.mathapp.form.RegistData;
 import com.kyouhei.mathapp.repository.UserRepository;
 
 import lombok.AllArgsConstructor;
@@ -29,10 +29,10 @@ public class LoginService {
 	}
 	
 	//ログインチェック
-	public boolean isValid(LoginData loginData,BindingResult result) {
+	public boolean isValid(LoginRequest loginData,BindingResult result) {
 		
 		//ログインiDが登録されているか
-		Optional<User> user=userRepo.findByUserId(loginData.getLoginId());
+		Optional<User> user=userRepo.findByUserId(loginData.getUserId());
 		if(user.isEmpty()) {
 			addError(result);
 			return false;
@@ -47,7 +47,7 @@ public class LoginService {
 	}
 	
 	//ユーザー登録チェック
-	public boolean isValid(RegistData registData,BindingResult result) {
+	public boolean isValid(RegisterRequest registData,BindingResult result) {
 		//パスワード不一致
 		if(!registData.getPassword1().equals(registData.getPassword2())) {
 			FieldError fieldError=new FieldError(

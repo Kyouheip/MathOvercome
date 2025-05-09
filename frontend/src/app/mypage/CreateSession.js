@@ -10,7 +10,11 @@ export default function CreateSession(){
     const startTest = async () => {
         const res = await fetch(
             `${process.env.NEXT_PUBLIC_API_URL}/session/test?includeIntegers=${includeIntegers}`,
-            {method: 'post'}
+            {
+            method: 'post',
+            credentials: 'include',
+            }
+
         );
 
         if (!res.ok) {
@@ -21,7 +25,8 @@ export default function CreateSession(){
         const session = await res.json();
         console.log('APIレスポンス:', session);
 
-        router.push(`/session/${session.id}/problems`);
+        const idx = 0;
+        router.push(`/session/${session.id}/problems/${idx}`);
     };
 
     return(

@@ -1,11 +1,14 @@
 //session/[sessionId]/problems/[idx]/page.js
-import QuestionForm from 'QuestionForm';
+import QuestionForm from './QuestionForm';
 
 export default async function ProblemPage({params}){
     const {sessionId,idx}=params;
     const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/session/${sessionId}/problems/${idx}`,
-        {cache:'no-store'}
+        {
+        cache:'no-store',
+        credentials: 'include',
+        }
     );
 
     if(!res.ok){
@@ -22,8 +25,8 @@ export default async function ProblemPage({params}){
                 sessionId={sessionId}
                 idx={Number(idx)}
                 sessProbId={sp.id}
-                choiceTexts={sp.choiceTexts}
-                total={null}
+                choices={sp.choices}
+                total={sp.total}
                 />
         </div>
     )

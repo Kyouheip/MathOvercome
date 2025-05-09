@@ -6,7 +6,10 @@ export default async function ProblemPage({params}){
 
     const res=await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/session/${sessionId}/problems`,
-        {cache: "no-store"}
+        {
+        cache: "no-store",
+        credentials: 'include',
+        }
     );
 
 

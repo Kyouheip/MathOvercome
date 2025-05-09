@@ -1,4 +1,4 @@
-package com.kyouhei.mathapp.form;
+package com.kyouhei.mathapp.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -10,7 +10,7 @@ import com.kyouhei.mathapp.entity.User;
 import lombok.Data;
 
 @Data
-public class RegistData {
+public class RegisterRequest {
 
 	@NotBlank
 	private String userName;

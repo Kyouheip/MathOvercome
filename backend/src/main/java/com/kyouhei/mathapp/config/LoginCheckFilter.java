@@ -30,20 +30,20 @@ public class LoginCheckFilter implements Filter{
 		HttpServletResponse res=(HttpServletResponse)response;
 		
 		String uri=req.getRequestURI();
-		if(uri.startsWith("/session")) {
+		if(uri.startsWith("/session") || uri.startsWith("/api/session")) {
 			//セッションが存在するか
 			//引数なしは新しいセッションを作るのでfalseを指定
 			HttpSession session=req.getSession(false);
 			if(session==null) {
 				//sessionがないのでログイン画面へ
-				res.sendRedirect("/login");
+				res.sendRedirect("http://localhost:3000/login");
 			}else {
 				//sessionにuserが存在するか
 				User user=(User)session.getAttribute("user");
 				
 				if(user==null) {
 					//userがないのでログイン画面へ
-					res.sendRedirect("/login");
+					res.sendRedirect("http://localhost:3000/login");
 				}else {
 					//loginしているのでcontrollerにrequestを渡す
 					chain.doFilter(request, response);

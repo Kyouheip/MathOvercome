@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import com.kyouhei.mathapp.dto.LoginRequest;
+import com.kyouhei.mathapp.dto.RegisterRequest;
 import com.kyouhei.mathapp.entity.User;
-import com.kyouhei.mathapp.form.LoginData;
-import com.kyouhei.mathapp.form.RegistData;
 import com.kyouhei.mathapp.repository.UserRepository;
 import com.kyouhei.mathapp.service.LoginService;
 
@@ -29,7 +29,7 @@ public class LoginController {
 	//ログイン画面表示
 	@GetMapping("/login")
 	public String login(Model model) {
-		model.addAttribute("loginData",new LoginData());
+		model.addAttribute("loginData",new LoginRequest());
 		
 		return "loginForm";
 	}
@@ -37,7 +37,7 @@ public class LoginController {
 	//ログインボタン押下
 	@PostMapping("/login/do")
 	public String login(@ModelAttribute @Validated
-						LoginData loginData,
+						LoginRequest loginData,
 						BindingResult result,
 						Model model) {
 		//バリデーション、サービスチェック
@@ -48,7 +48,7 @@ public class LoginController {
 		session.invalidate();
 		
 		//userIdをセッションへ格納
-		User user=userRepo.findByUserId(loginData.getLoginId()).get();
+		User user=userRepo.findByUserId(loginData.getUserId()).get();
 		session.setAttribute("user",user);
 		
 		return "mypage";
@@ -64,7 +64,7 @@ public class LoginController {
 	//ユーザー新規登録画面
 	@GetMapping("/regist")
 	public String showRegist(Model model) {
-		model.addAttribute("registData",new RegistData());
+		model.addAttribute("registData",new RegisterRequest());
 		
 		return "registForm";
 	}
@@ -72,7 +72,7 @@ public class LoginController {
 	//ユーザー新規登録・登録ボタンが押されたとき
 	@PostMapping("/regist/do")
 	public String registNewUser(@ModelAttribute @Validated
-								RegistData registData,
+								RegisterRequest registData,
 								BindingResult result,
 								Model model) {
 		//バリデーション、サービスチェック

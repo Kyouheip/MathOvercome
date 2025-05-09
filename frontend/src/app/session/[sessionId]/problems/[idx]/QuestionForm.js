@@ -1,16 +1,17 @@
 //session/[sessionId]/problems/[idx]/QuestionForm.js
 'use client'
 import {useState} from 'react'
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 
-export default function QuestionForm({sessionId,idx,sessProbId,choiceTexts,total}){
+export default function QuestionForm({sessionId,idx,sessProbId,choices,total}){
     const [selectedId,setSelectedId] = useState(null);
     const router = useRouter();
 
     const submit = async (e) => {
+        //formを使うときは必要。ないとリロードされReactが無視される
         e.preventDefault();
 
-        if(!selected){
+        if(!selectedId){
             alert("選択肢を選んでください")
             return;
         }
@@ -20,7 +21,8 @@ export default function QuestionForm({sessionId,idx,sessProbId,choiceTexts,total
             {
                 method: "post",
                 headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({selectedChoiceId: selected})
+                credentials: 'include',
+                body: JSON.stringify({selectedChoiceId: selectedId}),
             }
         );
 
@@ -39,13 +41,13 @@ export default function QuestionForm({sessionId,idx,sessProbId,choiceTexts,total
 
     return(
         <form onSubmit={submit}>
-            {choices.map(c => (
-                <label key={c.id}>
+            {choices.map(choice => (
+                <label key={choice.id}>
                     <input
                      type="radio"
-                     onChange={() => setSelectedId(c.id)}
+                     onChange={() => setSelectedId(choice.id)}
                      />
-                     {c.choiceText}
+                     {choice.choiceText}
                 </label>
                     )
                 )
