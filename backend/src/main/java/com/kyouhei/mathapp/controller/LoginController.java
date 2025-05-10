@@ -1,14 +1,19 @@
 package com.kyouhei.mathapp.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.servlet.http.HttpSession;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.kyouhei.mathapp.dto.LoginRequest;
 import com.kyouhei.mathapp.dto.RegisterRequest;
@@ -18,78 +23,75 @@ import com.kyouhei.mathapp.service.LoginService;
 
 import lombok.AllArgsConstructor;
 
-@Controller
+@RestController
+@RequestMapping("/auth")
+//クロスオリジン設定 Cookieが送信される
+@CrossOrigin(origins = "http://localhost:3000",allowCredentials = "true")
 @AllArgsConstructor
 public class LoginController {
+	
+	private final HttpSession session;
+	private final LoginService loginService;
+	private final UserRepository userRepo;
 
-	private UserRepository userRepo;
-	private LoginService loginService;
-	private HttpSession session;
-	
-	//ログイン画面表示
-	@GetMapping("/login")
-	public String login(Model model) {
-		model.addAttribute("loginData",new LoginRequest());
+	//ログイン
+	@PostMapping("/login")
+	public ResponseEntity<?> login(
+				@RequestBody @Validated LoginRequest req,
+				BindingResult result){
 		
-		return "loginForm";
-	}
-	
-	//ログインボタン押下
-	@PostMapping("/login/do")
-	public String login(@ModelAttribute @Validated
-						LoginRequest loginData,
-						BindingResult result,
-						Model model) {
-		//バリデーション、サービスチェック
-		if(result.hasErrors()|| !loginService.isValid(loginData,result))
-			return "loginForm";
-		
-		//セッションクリア
-		session.invalidate();
+		//バリデーション & 認証チェック
+		if(result.hasErrors()|| !loginService.isValid(req,result)) {
+			List<String> errors = new ArrayList<>();
+			
+			for(FieldError error : result.getFieldErrors()) {
+				String message = error.getField()+":"+error.getDefaultMessage();
+				errors.add(message);
+			}
+			
+			return ResponseEntity.badRequest().body(errors);
+			
+		}
 		
 		//userIdをセッションへ格納
-		User user=userRepo.findByUserId(loginData.getUserId()).get();
+		User user = userRepo.findByUserId(req.getUserId()).get();
 		session.setAttribute("user",user);
+		System.out.println("ログインセッションID: " + session.getId());
+
 		
-		return "mypage";
+		return ResponseEntity.ok().build();
 	}
 	
 	//ログアウト
-	@GetMapping("logout")
-	public String logout() {
+	@PostMapping("logout")
+	public ResponseEntity<Void> logout(){
 		session.invalidate();
-		return "redirect:/login";
+		return ResponseEntity.noContent().build();
 	}
 	
-	//ユーザー新規登録画面
-	@GetMapping("/regist")
-	public String showRegist(Model model) {
-		model.addAttribute("registData",new RegisterRequest());
+	//新規登録
+	@PostMapping("/register")
+	public ResponseEntity<?> register(
+			@RequestBody @Validated RegisterRequest req,
+			BindingResult result){
 		
-		return "registForm";
-	}
-	
-	//ユーザー新規登録・登録ボタンが押されたとき
-	@PostMapping("/regist/do")
-	public String registNewUser(@ModelAttribute @Validated
-								RegisterRequest registData,
-								BindingResult result,
-								Model model) {
 		//バリデーション、サービスチェック
-		if(result.hasErrors() || !loginService.isValid(registData,result))
-			return "registForm";
+		if(result.hasErrors() || !loginService.isValid(req,result)) {
+			List<String> errors = new ArrayList<>();
 			
+			for(FieldError error : result.getFieldErrors()) {
+				String message = error.getField()+":"+error.getDefaultMessage();
+				errors.add(message);
+			}
+			
+			return ResponseEntity.badRequest().body(errors);
+		}
+		
 		//ユーザー登録
-		User user=registData.toEntity();
+		User user = req.toEntity();
 		userRepo.saveAndFlush(user);
-		
-		return "redirect:/login";
-		
-	}
-	
-	//ユーザー新規登録・戻るボタン
-	@GetMapping("/regist/cancel")
-	public String registCancel() {
-		return "redirect:/login";
+				
+		return ResponseEntity.status(201).build();
+				
 	}
 }

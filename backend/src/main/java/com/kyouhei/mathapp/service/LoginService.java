@@ -21,7 +21,7 @@ public class LoginService {
 	
 	//このクラスで使うためだけのエラー追加メソッド
 	public void addError(BindingResult result){
-		FieldError fieldError=new FieldError(
+		FieldError fieldError = new FieldError(
 				result.getObjectName(),
 				"password",
 				"IDまたはパスワードが間違っています。");
@@ -32,7 +32,7 @@ public class LoginService {
 	public boolean isValid(LoginRequest loginData,BindingResult result) {
 		
 		//ログインiDが登録されているか
-		Optional<User> user=userRepo.findByUserId(loginData.getUserId());
+		Optional<User> user = userRepo.findByUserId(loginData.getUserId());
 		if(user.isEmpty()) {
 			addError(result);
 			return false;
@@ -50,7 +50,7 @@ public class LoginService {
 	public boolean isValid(RegisterRequest registData,BindingResult result) {
 		//パスワード不一致
 		if(!registData.getPassword1().equals(registData.getPassword2())) {
-			FieldError fieldError=new FieldError(
+			FieldError fieldError = new FieldError(
 					result.getObjectName(),
 					"password2",
 					"パスワードが一致しません。");
@@ -59,9 +59,9 @@ public class LoginService {
 		}
 		
 		//ログインIDがすでに登録済かどうか
-		Optional<User> user=userRepo.findByUserId(registData.getUserId());
+		Optional<User> user = userRepo.findByUserId(registData.getUserId());
 		if(user.isPresent()) {
-			FieldError fieldError=new FieldError(
+			FieldError fieldError = new FieldError(
 					result.getObjectName(),
 					"userId",
 					"すでに利用されているIDです。");

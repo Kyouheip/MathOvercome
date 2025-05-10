@@ -16,7 +16,7 @@ export default function RegisterPage(){
         setError("");
 
         const res = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/api/auth/register`,
+            `${process.env.NEXT_PUBLIC_API_URL}/auth/register`,
             {
                 method: "POST",
                 headers: {"Content-Type":"application/json"},
@@ -32,45 +32,66 @@ export default function RegisterPage(){
         }
     };
 
+    const handleBack = () => {
+        router.push("/login");
+    }
+
     return(
-        <div>
-            <h2>新規登録</h2>
+        <div className="container mt-4">
+            <h2 className="mb-3">新規登録</h2>
             <form onSubmit = {doRegister}>
-            <label>
-                ID<br/>
+            <div className="mb-3">
+              <label htmlFor="userId" className="form-label">ID</label>
+              <input
+                id="userId" //css
+                type="text"
+                className="form-control" //css
+                value={userId}
+                onChange={e => setUserId(e.target.value)}
+                required
+              />
+              </div>
+
+              <div className="mb-3">
+                <label htmlFor="userName" className="form-label">名前</label>
                 <input
+                    id="userName"
                     type="text"
-                    value={userId}
-                    onChange={e => setUserId(e.target.value)}
-                    required/>
-            </label>
-            <label>
-                名前<br/>
-                <input
-                    type="text"
+                    className="form-control"
                     value={userName}
                     onChange={e => setUserName(e.target.value)}
-                    required/>
-            </label>
-            <label>
-                パスワード<br/>
+                    required
+                />
+              </div>
+            
+              <div className="mb-3">
+                <label htmlFor="password1" className="form-label">パスワード</label>
                 <input
+                    id="password1"
                     type="password"
+                    className="form-control"
                     value={password1}
                     onChange={e => setPassword1(e.target.value)}
-                    required/>
-            </label>
-            <label>
-                パスワード確認<br/>
+                    required
+                />
+              </div>
+              
+              <div className="mb-3">
+              <label htmlFor="password2" className="form-label">パスワード確認</label>
                 <input
+                    id="password2"
                     type="password"
+                    className="form-control"
                     value={password2}
                     onChange={e => setPassword2(e.target.value)}
-                    required/>
-            </label>
-            {error && <p>{error}</p>}
+                    required
+                />
+              </div>
+              
+            {error && <p className="text-danger">{error}</p>}
 
-            <button tyoe="submit">登録</button>
+            <button type="submit" className="btn btn-primary me-2">登録</button>
+            <button type="button" className="btn btn-secondary" onClick={handleBack}>戻る</button>
             </form>
         </div>
     );

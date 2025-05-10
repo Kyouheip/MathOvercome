@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 export default function QuestionForm({sessionId,idx,sessProbId,choices,total}){
     const [selectedId,setSelectedId] = useState(null);
     const router = useRouter();
+    const [error,setError] = useState(null);
 
     const submit = async (e) => {
         //formを使うときは必要。ないとリロードされReactが無視される
@@ -15,9 +16,9 @@ export default function QuestionForm({sessionId,idx,sessProbId,choices,total}){
             alert("選択肢を選んでください")
             return;
         }
-
+        try{
         const res = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/api/session/${sessionId}/problems/${idx}/answer`,
+            `${process.env.NEXT_PUBLIC_API_URL}/session/${sessionId}/problems/${idx}/answer`,
             {
                 method: "post",
                 headers: {"Content-Type": "application/json"},
@@ -26,11 +27,19 @@ export default function QuestionForm({sessionId,idx,sessProbId,choices,total}){
             }
         );
 
-        if(!res.ok){
-            alert("送信に失敗しました(${res.status})");
+        if(res.status === 401){
+            setError("セッションが切れたか不正なアクセスです。ログインし直してください。");
             return ;
         }
 
+        if(!res.ok){
+            setError(`送信に失敗しました(${res.status})`);
+            return ;
+        }
+        }catch (e) {
+             setError("通信エラーが発生しました");
+             return ;
+        }
         const nextIdx = idx+1;
         if(nextIdx < total){
             router.push(`/session/${sessionId}/problems/${nextIdx}`)
@@ -39,20 +48,43 @@ export default function QuestionForm({sessionId,idx,sessProbId,choices,total}){
         }
     };
 
+    const handleBack = () => {
+        router.back();
+    }
+
+    if (error) {
+        return (
+          <div>
+            <p>{error}</p>
+            <p><a href="/login">ログインページへ</a></p>
+          </div>
+        );
+      }
+
     return(
         <form onSubmit={submit}>
+          <div className="mb-3">
             {choices.map(choice => (
-                <label key={choice.id}>
+                <div className="form-check" key={choice.id}>
                     <input
+                     className="form-check-input"
                      type="radio"
+                     name="choice"
+                     id={`choice-${choice.id}`}
+                     checked={selectedId === choice.id}
                      onChange={() => setSelectedId(choice.id)}
                      />
-                     {choice.choiceText}
-                </label>
+                    <label htmlFor={`choice-${choice.id}`} className="form-check-label">
+                      {choice.choiceText}
+                    </label>
+                </div>
                     )
                 )
             }
-            <button type="submit">次へ</button>
+           </div>
+
+            <button type="submit" className="btn btn-primary me-2">次へ</button>
+            <button type="button" className="btn btn-secondary" onClick={handleBack}>戻る</button>
         </form>
     );
 }

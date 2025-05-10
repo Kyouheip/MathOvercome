@@ -12,22 +12,22 @@ import jakarta.persistence.Table;
 import lombok.Data;
 
 @Entity
-@Table(name="choices")
+@Table(name = "choices")
 @Data
 public class Choice {
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	
 	@ManyToOne
-	@JoinColumn(name="problem_id")
+	@JoinColumn(name = "problem_id")
 	private Problem problem;
 	
-	@Column(name="choice_text")
+	@Column(name = "choice_text")
 	private String choiceText;
 	
-	@Column(name="is_correct")
+	@Column(name = "is_correct")
 	private boolean isCorrect;
 
 }

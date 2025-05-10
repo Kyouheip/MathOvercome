@@ -19,26 +19,26 @@ import lombok.Data;
 import lombok.ToString;
 
 @Entity
-@Table(name="testsessions")
+@Table(name = "testsessions")
 @Data
-@ToString(exclude="sessionProblems")
+@ToString(exclude = "sessionProblems")
 public class TestSession {
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
 	@ManyToOne
-	@JoinColumn(name="user_id")
+	@JoinColumn(name = "user_id")
 	private User user;
 	
-	@Column(name="include_integers")
+	@Column(name = "include_integers")
 	private boolean includeIntegers;
 	
-	@Column(name="start_time")
-	private LocalDateTime startTime=LocalDateTime.now();
+	@Column(name = "start_time")
+	private LocalDateTime startTime = LocalDateTime.now();
 	
-	@OneToMany(mappedBy="testSession",cascade=CascadeType.ALL)
+	@OneToMany(mappedBy = "testSession",cascade = CascadeType.ALL)
 	@OrderBy("id ASC")
 	private List<SessionProblem> sessionProblems;
 	

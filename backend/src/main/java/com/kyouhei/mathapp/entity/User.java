@@ -17,25 +17,25 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
-@Table(name="users")
+@Table(name = "users")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString(exclude="testSessions")
+@ToString(exclude = "testSessions")
 public class User {
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@Column(name="user_name")
+	@Column(name = "user_name")
 	private String userName;
 	
-	@Column(name="user_id")
+	@Column(name = "user_id")
 	private String userId;
 	
 	private String password;
 	
-	@OneToMany(mappedBy="user",cascade=CascadeType.ALL)
+	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
 	private List<TestSession> testSessions;
 }

@@ -12,9 +12,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
+import org.springframework.stereotype.Component;
+
 import com.kyouhei.mathapp.entity.User;
 
-//@Component
+@Component
 public class LoginCheckFilter implements Filter{
 
 	@Override
@@ -24,27 +26,35 @@ public class LoginCheckFilter implements Filter{
 									throws IOException,ServletException{
 		
 		//URLパス取得のためダウンキャスト
-		HttpServletRequest req=(HttpServletRequest)request;
-		HttpServletResponse res=(HttpServletResponse)response;
+		HttpServletRequest req = (HttpServletRequest)request;
+		HttpServletResponse res = (HttpServletResponse)response;
 		
-		//クロスオリジン設定がないのでFilter内でつける
+		//?クロスオリジン設定がないのでFilter内でつける?
 		res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
 		res.setHeader("Access-Control-Allow-Credentials", "true");
+		res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+		res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 		
-		String uri=req.getRequestURI();
-		if(uri.startsWith("/session") || uri.startsWith("/api/session")) {
+		// ?OPTIONSリクエストは許可して終了？
+	    if ("OPTIONS".equalsIgnoreCase(req.getMethod())) {
+	        res.setStatus(HttpServletResponse.SC_OK);
+	        return;
+	    }
+		
+		String uri = req.getRequestURI();
+		if(uri.startsWith("/session")) {
 			//セッションが存在するか
 			//引数なしは新しいセッションを作るのでfalseを指定
-			HttpSession session=req.getSession(false);
-			if(session==null) {
+			HttpSession session = req.getSession(false);
+			if(session == null) {
 				//sessionがないので401
 				res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
 				//res.sendRedirect("http://localhost:3000/login");
 			}else {
 				//sessionにuserが存在するか
-				User user=(User)session.getAttribute("user");
+				User user = (User)session.getAttribute("user");
 				
-				if(user==null) {
+				if(user == null) {
 					//userがないので401
 					res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
 					//res.sendRedirect("http://localhost:3000/login");

@@ -1,5 +1,5 @@
 // /crs/app
-//import "./globals.css";
+import "./globals.css";
 
 export const metadata = {
   title: "MathOvercome"
@@ -12,14 +12,14 @@ export default function RootLayout({ children }) {
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
                     rel="stylesheet"
                     integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM"
-                    crossorigin="anonymous"/>
+                    crossOrigin="anonymous"/>
       </head>
 
-      <body>
+      <body className="bg-lightpink">
 
-        <header>
+        <header  className="bg-primary text-white p-3">
         <h1>MathOvercome</h1>
-        </header>
+        </header> 
 
         <main>{children}</main>
         

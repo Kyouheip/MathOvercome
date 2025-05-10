@@ -1,36 +1,36 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th = "http://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
+<meta charset = "UTF-8">
 <title>問題 [[${idx+1}]]/[[${max}]]</title>
 </head>
 <body>
 	<h2>問題 [[${idx+1}]]/[[${max}]]</h2>
 	
 	<!--問題-->
-	<p th:text="${sp.problem.question}"></p>
+	<p th:text = "${sp.problem.question}"></p>
 	
 	<!--選択フォーム-->
-	<form th:action="@{'/session/'+${sp.testSession.id}+
-						'/problem/'+${sp.id}+'/answer'}" method="post">
-		<input type="hidden" name="idx" th:value="${idx}"/>
-		<div th:each="choice : ${sp.problem.choices}" >
+	<form th:action = "@{'/session/'+${sp.testSession.id}+
+						'/problem/'+${sp.id}+'/answer'}" method = "post">
+		<input type = "hidden" name = "idx" th:value = "${idx}"/>
+		<div th:each = "choice : ${sp.problem.choices}" >
 			<label>
-			 <input type="radio" name="selectedChoiceId" 
-			 	th:value="${choice.id}" 
-			 	th:checked="${sp.selectedChoice != null and 
-					choice.id == sp.selectedChoice.id}"
+			 <input type = "radio" name = "selectedChoiceId" 
+			 	th:value = "${choice.id}" 
+			 	th:checked = "${sp.selectedChoice ! =  null and 
+					choice.id  =  =  sp.selectedChoice.id}"
 				required />
-					<span th:text="${choice.choiceText}"></span>
+					<span th:text = "${choice.choiceText}"></span>
 			</label>
 		</div>
-		<button type="submit">次へ</button>	
+		<button type = "submit">次へ</button>	
 	</form>
 	
 	<!--解答済みの場合正誤表示
-	<div th:if="${sp.isCorrect != null}">
-					<p th:text="${sp.isCorrect ? '正解！' : '不正解'}"
-						th:style="${sp.isCorrect ? 'color:green;' : 'color:red;">
+	<div th:if = "${sp.isCorrect ! =  null}">
+					<p th:text = "${sp.isCorrect ? '正解！' : '不正解'}"
+						th:style = "${sp.isCorrect ? 'color:green;' : 'color:red;">
 					</p>
 				</div>-->
 </body>

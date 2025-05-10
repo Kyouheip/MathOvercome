@@ -17,23 +17,23 @@ import lombok.Data;
 import lombok.ToString;
 
 @Entity
-@Table(name="problems")
+@Table(name = "problems")
 @Data
-@ToString(exclude="choices")
+@ToString(exclude = "choices")
 public class Problem{
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@Column(name="category_id")
+	@Column(name = "category_id")
 	private int categoryId;
 	
 	private String question;
 	
 	private String answer;
 	
-	@OneToMany(mappedBy="problem",cascade=CascadeType.ALL)
+	@OneToMany(mappedBy = "problem",cascade = CascadeType.ALL)
 			//problems側に外部キーなし
 	private List<Choice> choices;
 

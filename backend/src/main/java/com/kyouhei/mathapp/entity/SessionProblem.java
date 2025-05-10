@@ -12,27 +12,27 @@ import jakarta.persistence.Table;
 import lombok.Data;
 
 @Entity
-@Table(name="sessionproblems")
+@Table(name = "sessionproblems")
 @Data
 public class SessionProblem {
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
 	@ManyToOne
-	@JoinColumn(name="session_id")
+	@JoinColumn(name = "session_id")
 	private TestSession testSession;
 	
 	@ManyToOne
-	@JoinColumn(name="problem_id")
+	@JoinColumn(name = "problem_id")
 	private Problem problem;
 	
 	@ManyToOne
-	@JoinColumn(name="selected_choice_id")
+	@JoinColumn(name = "selected_choice_id")
 	private Choice selectedChoice;
 	
-	@Column(name="is_correct")
+	@Column(name = "is_correct")
 	private Boolean isCorrect;
 	
 	
