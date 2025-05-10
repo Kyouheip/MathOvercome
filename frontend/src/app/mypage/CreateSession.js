@@ -9,7 +9,7 @@ export default function CreateSession(){
 
     const startTest = async () => {
         const res = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/session/test?includeIntegers=${includeIntegers}`,
+            `${process.env.NEXT_PUBLIC_API_URL}/api/session/test?includeIntegers=${includeIntegers}`,
             {
             method: 'post',
             credentials: 'include',

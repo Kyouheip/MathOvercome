@@ -17,7 +17,7 @@ export default function QuestionForm({sessionId,idx,sessProbId,choices,total}){
         }
 
         const res = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/session/${sessionId}/problems/${idx}/answer`,
+            `${process.env.NEXT_PUBLIC_API_URL}/api/session/${sessionId}/problems/${idx}/answer`,
             {
                 method: "post",
                 headers: {"Content-Type": "application/json"},

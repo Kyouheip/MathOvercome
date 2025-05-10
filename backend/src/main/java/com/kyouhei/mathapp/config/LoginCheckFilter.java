@@ -12,11 +12,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-import org.springframework.stereotype.Component;
-
 import com.kyouhei.mathapp.entity.User;
 
-@Component
+//@Component
 public class LoginCheckFilter implements Filter{
 
 	@Override
@@ -29,21 +27,27 @@ public class LoginCheckFilter implements Filter{
 		HttpServletRequest req=(HttpServletRequest)request;
 		HttpServletResponse res=(HttpServletResponse)response;
 		
+		//クロスオリジン設定がないのでFilter内でつける
+		res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+		res.setHeader("Access-Control-Allow-Credentials", "true");
+		
 		String uri=req.getRequestURI();
 		if(uri.startsWith("/session") || uri.startsWith("/api/session")) {
 			//セッションが存在するか
 			//引数なしは新しいセッションを作るのでfalseを指定
 			HttpSession session=req.getSession(false);
 			if(session==null) {
-				//sessionがないのでログイン画面へ
-				res.sendRedirect("http://localhost:3000/login");
+				//sessionがないので401
+				res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+				//res.sendRedirect("http://localhost:3000/login");
 			}else {
 				//sessionにuserが存在するか
 				User user=(User)session.getAttribute("user");
 				
 				if(user==null) {
-					//userがないのでログイン画面へ
-					res.sendRedirect("http://localhost:3000/login");
+					//userがないので401
+					res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+					//res.sendRedirect("http://localhost:3000/login");
 				}else {
 					//loginしているのでcontrollerにrequestを渡す
 					chain.doFilter(request, response);

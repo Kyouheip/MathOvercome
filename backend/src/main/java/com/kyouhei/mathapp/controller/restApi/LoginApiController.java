@@ -56,6 +56,8 @@ public class LoginApiController {
 		//userIdをセッションへ格納
 		User user=userRepo.findByUserId(req.getUserId()).get();
 		session.setAttribute("user",user);
+		System.out.println("ログインセッションID: " + session.getId());
+
 		
 		return ResponseEntity.ok().build();
 	}

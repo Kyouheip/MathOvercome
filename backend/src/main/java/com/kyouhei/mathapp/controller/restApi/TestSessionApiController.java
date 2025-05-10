@@ -39,7 +39,6 @@ import lombok.AllArgsConstructor;
 public class TestSessionApiController {
 
 	private final TestSessionService testSessService;
-	private final HttpSession session;
 	private final ChoiceRepository choiceRepo;
 	private final SessionProblemRepository sessProbRepo;
 	private final TestSessionRepository testSessRepo;
@@ -47,10 +46,10 @@ public class TestSessionApiController {
 	//セッション作成
 	@PostMapping("/test")
 	public ResponseEntity<TestSessionDto> createTestSess(
-			@RequestParam(defaultValue="false") boolean includeIntegers) {
+				@RequestParam(defaultValue="false") boolean includeIntegers,
+				HttpSession session) {
 		
 	  User user=(User)session.getAttribute("user");
-	    
 	  TestSession testSess= testSessService.createTestSess(user, includeIntegers);
 	  //DTOマッピング
 	  TestSessionDto dto=new TestSessionDto();
@@ -59,36 +58,14 @@ public class TestSessionApiController {
 	  return ResponseEntity.status(HttpStatus.CREATED).body(dto);
 	}
 
-    /*問題表示
-	@GetMapping("/{sessionId}/problems")
-	public ResponseEntity<List<SessionProblemDto>> vieｗProblems(
-	    @PathVariable Long sessionId) {
-		
-		User user=(User)session.getAttribute("user");
-		
-		
-	  List<SessionProblem> sps=testSessService.getSessionProblems(sessionId);
-	  //DTOにマッピング
-	  List<SessionProblemDto> spDtos=new ArrayList<>();
-	  
-	  for(SessionProblem sp : sps) {
-	   SessionProblemDto spDto=new SessionProblemDto();
-	   spDto.setId(sp.getId());
-	   spDto.setQuestion(sp.getProblem().getQuestion());
-	   spDtos.add(spDto);
-	  }
-	    
-	  return ResponseEntity.ok(spDtos);
-	}*/
-	
 	//1問ずつ問題表示
 	@GetMapping("/{sessionId}/problems/{idx}")
 	public ResponseEntity<SessionProblemDto> viewOneProblem(
 			  				@PathVariable Long sessionId,
-			  				@PathVariable int idx){
-		  
+			  				@PathVariable int idx,
+			  				HttpSession session){
+	
 		User user=(User)session.getAttribute("user");
-		
 		Optional<TestSession> someTestSess=
 				testSessRepo.findById(sessionId);
 		
@@ -137,7 +114,8 @@ public class TestSessionApiController {
 	public ResponseEntity<Void> submitAndNext(
 			  @PathVariable Long sessionId,
 			  @PathVariable int idx,
-			  @RequestBody AnswerRequest req){
+			  @RequestBody AnswerRequest req,
+			  HttpSession session){
 		  
 		User user=(User)session.getAttribute("user");
 		

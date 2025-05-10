@@ -1,21 +1,36 @@
 //session/[sessionId]/problems/[idx]/page.js
+"use client"
+import { useEffect, useState} from "react";
 import QuestionForm from './QuestionForm';
 
-export default async function ProblemPage({params}){
+export default function ProblemPage({params}){
     const {sessionId,idx}=params;
-    const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/session/${sessionId}/problems/${idx}`,
-        {
-        cache:'no-store',
-        credentials: 'include',
-        }
-    );
+    const [sp, setSp] = useState(null);
+    const [error, setError] = useState(null);
 
-    if(!res.ok){
-        return <p>エラー: 問題{idx}が取得できませんでした。(${res.status})</p>;
-    }
+    useEffect(() => {
+        const load = async () => {
+         try{
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/session/${sessionId}/problems/${idx}`,
+            {
+            credentials: "include",
+            });
+            if (!res.ok) {
+                setError(`エラー: ${res.status}`);
+                return;
+              }
+            const data = await res.json();
+            setSp(data);
+         } catch (e){
+            setError("通信エラー");
+         }
+        };
 
-    const sp = await res.json();
+        load();
+    },[idx]);
+
+    if(error) return <p>{error}</p>;
+    if(!sp) return <p>読み込み中...</p>;
 
     return(
         <div>

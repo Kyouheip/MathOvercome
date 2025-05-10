@@ -14,7 +14,7 @@ export default function LoginPage(){
     setError("");
 
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
+      `${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`,
       {
       method: "POST",
       headers: {"Content-Type":"application/json"},
@@ -42,9 +42,9 @@ export default function LoginPage(){
           <input 
             type = "text"
             value = {userId}
-            onChenge = {e => setUserId(e.target.value)}
+            onChange = {e => setUserId(e.target.value)}
             required/>
-        </label>
+        </label><br/>
         <label>
           パスワード<br/>
           <input
