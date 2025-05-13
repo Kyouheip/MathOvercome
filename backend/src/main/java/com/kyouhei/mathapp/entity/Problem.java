@@ -10,6 +10,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
@@ -29,9 +30,10 @@ public class Problem{
 	@Column(name = "category_id")
 	private int categoryId;
 	
+	@Lob
 	private String question;
 	
-	private String answer;
+	private String hint;
 	
 	@OneToMany(mappedBy = "problem",cascade = CascadeType.ALL)
 			//problems側に外部キーなし

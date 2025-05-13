@@ -19,13 +19,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.kyouhei.mathapp.dto.AnswerRequest;
 import com.kyouhei.mathapp.dto.ChoiceDto;
+import com.kyouhei.mathapp.dto.ProblemDto;
 import com.kyouhei.mathapp.dto.SessionProblemDto;
 import com.kyouhei.mathapp.dto.TestSessionDto;
 import com.kyouhei.mathapp.entity.Choice;
+import com.kyouhei.mathapp.entity.Problem;
 import com.kyouhei.mathapp.entity.SessionProblem;
 import com.kyouhei.mathapp.entity.TestSession;
 import com.kyouhei.mathapp.entity.User;
 import com.kyouhei.mathapp.repository.ChoiceRepository;
+import com.kyouhei.mathapp.repository.ProblemRepository;
 import com.kyouhei.mathapp.repository.SessionProblemRepository;
 import com.kyouhei.mathapp.repository.TestSessionRepository;
 import com.kyouhei.mathapp.service.TestSessionService;
@@ -42,6 +45,7 @@ public class TestSessionController {
 	private final ChoiceRepository choiceRepo;
 	private final SessionProblemRepository sessProbRepo;
 	private final TestSessionRepository testSessRepo;
+	private final ProblemRepository probRepo;
 
 	//セッション作成
 	@PostMapping("/test")
@@ -151,4 +155,30 @@ public class TestSessionController {
 		return ResponseEntity.noContent().build();
 	}
 	  
+	//テスト
+	@GetMapping("/st")
+	public ResponseEntity<List<ProblemDto>> test(){
+		List<Problem> probs = probRepo.findAll();
+		List<ProblemDto> probDtos = new ArrayList<>();
+		for(Problem prob : probs) {
+			ProblemDto probDto = new ProblemDto();
+			
+			List<ChoiceDto> choiceDtos = new ArrayList<>();
+			for(Choice choice : prob.getChoices()) {
+				ChoiceDto choiceDto = new ChoiceDto();
+				choiceDto.setId(choice.getId());
+				choiceDto.setChoiceText(choice.getChoiceText());
+				choiceDtos.add(choiceDto);
+			}
+			
+			probDto.setId(prob.getId());
+			probDto.setQuestion(prob.getQuestion());
+			probDto.setHint(prob.getHint());
+			probDto.setChoices(choiceDtos);
+			
+			
+			probDtos.add(probDto);
+		}
+		return ResponseEntity.ok(probDtos);
+	}
 }
