@@ -21,13 +21,13 @@ import com.kyouhei.mathapp.entity.User;
 import com.kyouhei.mathapp.repository.UserRepository;
 import com.kyouhei.mathapp.service.LoginService;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/auth")
 //クロスオリジン設定 Cookieが送信される
 @CrossOrigin(origins = "http://localhost:3000",allowCredentials = "true")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class LoginController {
 	
 	private final HttpSession session;

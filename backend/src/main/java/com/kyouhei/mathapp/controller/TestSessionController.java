@@ -33,11 +33,11 @@ import com.kyouhei.mathapp.repository.SessionProblemRepository;
 import com.kyouhei.mathapp.repository.TestSessionRepository;
 import com.kyouhei.mathapp.service.TestSessionService;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/session")
-@AllArgsConstructor
+@RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost:3000",allowCredentials = "true")
 public class TestSessionController {
 

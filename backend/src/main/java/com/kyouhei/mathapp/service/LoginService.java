@@ -11,13 +11,13 @@ import com.kyouhei.mathapp.dto.RegisterRequest;
 import com.kyouhei.mathapp.entity.User;
 import com.kyouhei.mathapp.repository.UserRepository;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class LoginService {
 
-	private UserRepository userRepo;
+	private final UserRepository userRepo;
 	
 	//このクラスで使うためだけのエラー追加メソッド
 	public void addError(BindingResult result){
