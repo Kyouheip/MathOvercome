@@ -19,16 +19,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.kyouhei.mathapp.dto.AnswerRequest;
 import com.kyouhei.mathapp.dto.ChoiceDto;
-import com.kyouhei.mathapp.dto.ProblemDto;
 import com.kyouhei.mathapp.dto.SessionProblemDto;
 import com.kyouhei.mathapp.dto.TestSessionDto;
 import com.kyouhei.mathapp.entity.Choice;
-import com.kyouhei.mathapp.entity.Problem;
 import com.kyouhei.mathapp.entity.SessionProblem;
 import com.kyouhei.mathapp.entity.TestSession;
 import com.kyouhei.mathapp.entity.User;
 import com.kyouhei.mathapp.repository.ChoiceRepository;
-import com.kyouhei.mathapp.repository.ProblemRepository;
 import com.kyouhei.mathapp.repository.SessionProblemRepository;
 import com.kyouhei.mathapp.repository.TestSessionRepository;
 import com.kyouhei.mathapp.service.TestSessionService;
@@ -45,8 +42,6 @@ public class TestSessionController {
 	private final ChoiceRepository choiceRepo;
 	private final SessionProblemRepository sessProbRepo;
 	private final TestSessionRepository testSessRepo;
-	private final ProblemRepository probRepo;
-
 	//セッション作成
 	@PostMapping("/test")
 	public ResponseEntity<TestSessionDto> createTestSess(
@@ -104,10 +99,17 @@ public class TestSessionController {
 			choiceDto.setChoiceText(choice.getChoiceText());
 			choiceDtos.add(choiceDto);
 		}
+		
+		//戻るボタンを押した際、チェック情報を表示する
+		Long selectedChoiceId = sp.getSelectedChoice() != null ? 
+										sp.getSelectedChoice().getId() : null;
+		
 	  SessionProblemDto spDto = new SessionProblemDto(
 			  					sp.getId(),
 			  					sp.getProblem().getQuestion(),
 			  					choiceDtos,
+			  					sp.getProblem().getHint(),
+			  					selectedChoiceId,
 			  					sps.size());
 			  
 		return ResponseEntity.ok(spDto);
@@ -145,40 +147,22 @@ public class TestSessionController {
 	    }
 		
 		//ログインIDと一致。通常処理 
+		//未解答の場合は処理なし
+		if(req.getSelectedChoiceId() != null) {
 		SessionProblem sp = sps.get(idx);
-		Choice selectedChoice = choiceRepo.findById(req.getSelectedChoiceId()).orElse(null);
+		Choice selectedChoice = choiceRepo.findById(req.getSelectedChoiceId()).get();
 		
 		sp.setSelectedChoice(selectedChoice);
-		sp.setIsCorrect(selectedChoice != null && selectedChoice.isCorrect());
+		sp.setIsCorrect(selectedChoice.isCorrect());
 		sessProbRepo.save(sp);
+		}
 		  
 		return ResponseEntity.noContent().build();
 	}
+	
+	//マイページへ送るデータ
+	//@GetMapping("/mypage")
+
 	  
-	//テスト
-	@GetMapping("/st")
-	public ResponseEntity<List<ProblemDto>> test(){
-		List<Problem> probs = probRepo.findAll();
-		List<ProblemDto> probDtos = new ArrayList<>();
-		for(Problem prob : probs) {
-			ProblemDto probDto = new ProblemDto();
-			
-			List<ChoiceDto> choiceDtos = new ArrayList<>();
-			for(Choice choice : prob.getChoices()) {
-				ChoiceDto choiceDto = new ChoiceDto();
-				choiceDto.setId(choice.getId());
-				choiceDto.setChoiceText(choice.getChoiceText());
-				choiceDtos.add(choiceDto);
-			}
-			
-			probDto.setId(prob.getId());
-			probDto.setQuestion(prob.getQuestion());
-			probDto.setHint(prob.getHint());
-			probDto.setChoices(choiceDtos);
-			
-			
-			probDtos.add(probDto);
-		}
-		return ResponseEntity.ok(probDtos);
-	}
+	
 }

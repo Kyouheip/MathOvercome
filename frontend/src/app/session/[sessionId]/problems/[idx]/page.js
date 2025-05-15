@@ -7,6 +7,7 @@ export default function ProblemPage({params}){
     const {sessionId,idx}=params;
     const [sp, setSp] = useState(null);
     const [error, setError] = useState(null);
+    const [showHint, setShowHint] = useState(false);
 
     useEffect(() => {
         const load = async () => {
@@ -51,15 +52,33 @@ export default function ProblemPage({params}){
 
     return(
         <div className="container mt-4">
-            <h2 className="mb-3">問題 {Number(idx)+1}</h2>
-            <p>{sp.question}</p>
+            <h2 className="mb-3">問題 {Number(idx)+1} / {sp.total}</h2>
+          <div className="bg-secondary p-3 rounded mb-4">
+            <p className="mb-0 text-dark fw-bold" dangerouslySetInnerHTML={{ __html: sp.question }} />
+          </div>
+
             <QuestionForm
                 sessionId={sessionId}
                 idx={Number(idx)}
-                sessProbId={sp.id}
                 choices={sp.choices}
+                initialselectedId={sp.selectedId}
                 total={sp.total}
                 />
-        </div>
-    )
+
+             <div className="mt-4">
+                <button
+                 className="btn btn-outline-info"
+                 onClick={() => setShowHint(!showHint)}
+               >
+                ヒント！
+                </button>
+
+                {showHint && (
+                  <div className="mt-3 p-3 rounded bg-secondary text-dark">
+                    <strong>ヒント：</strong> {sp.hint}
+                  </div>
+                )}
+              </div>
+       </div>
+    );
 }

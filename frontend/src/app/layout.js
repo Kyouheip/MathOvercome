@@ -15,11 +15,14 @@ export default function RootLayout({ children }) {
                     crossOrigin="anonymous"/>
       </head>
 
-      <body className="bg-lightpink">
+      <body className="bg-dark text-white">
 
-        <header  className="bg-primary text-white p-3">
-        <h1>MathOvercome</h1>
-        </header> 
+        <header className="bg-secondary text-dark p-3 position-relative">
+          <h1 className="mb-0">MathOvercome</h1>
+          <div className="position-absolute bottom-0 end-0 me-5 mb-2 text-dark fs-5">
+             ～数学の苦手を克服し大学受験を乗り越えよう！
+          </div>
+        </header>
 
         <main>{children}</main>
         

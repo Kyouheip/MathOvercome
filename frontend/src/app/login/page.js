@@ -54,7 +54,7 @@ export default function LoginPage(){
           className="form-control"
           value = {userId}
           onChange = {e => setUserId(e.target.value)}
-          required/>
+        />
       </div>
       <div className="mb-3">
         <label htmlFor="password" className="form-label">パスワード</label>
@@ -64,9 +64,9 @@ export default function LoginPage(){
           className="form-control"
           value={password} 
           onChange={e => setPassword(e.target.value)}
-          required/>
+        />
       </div>
-        {error && <p className="text-danger">{error}</p>}
+        {error && <pre className="text-danger">{error}</pre>}
         <button type="submit" className="btn btn-primary">ログイン</button>
       <p className="mt-2">新規登録は
       <a href="/register">こちら</a>

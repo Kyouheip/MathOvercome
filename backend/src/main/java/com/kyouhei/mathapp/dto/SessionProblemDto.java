@@ -12,5 +12,7 @@ public class SessionProblemDto {
 	private Long id;
 	private String question;
 	private List<ChoiceDto> choices;
+	private String hint;
+	private Long selectedId;
 	private int total;
 }

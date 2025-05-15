@@ -45,11 +45,10 @@ public class LoginController {
 			List<String> errors = new ArrayList<>();
 			
 			for(FieldError error : result.getFieldErrors()) {
-				String message = error.getField()+":"+error.getDefaultMessage();
-				errors.add(message);
+				errors.add(error.getDefaultMessage());
 			}
 			
-			return ResponseEntity.badRequest().body(errors);
+			return ResponseEntity.badRequest().body(String.join("\n", errors));
 			
 		}
 		
@@ -63,7 +62,7 @@ public class LoginController {
 	}
 	
 	//ログアウト
-	@PostMapping("logout")
+	@PostMapping("/logout")
 	public ResponseEntity<Void> logout(){
 		session.invalidate();
 		return ResponseEntity.noContent().build();
@@ -80,11 +79,21 @@ public class LoginController {
 			List<String> errors = new ArrayList<>();
 			
 			for(FieldError error : result.getFieldErrors()) {
-				String message = error.getField()+":"+error.getDefaultMessage();
+				String field = error.getField();
+				//フィールド名を日本語に変換
+				String japanField = switch (field) {
+		        case "password2" -> "パスワード確認";
+		        case "password1" -> "パスワード";
+		        case "userName"  -> "名前";
+		        case "userId"    -> "ID";
+		        default          -> field;
+				};
+				
+				String message = japanField +":"+error.getDefaultMessage();
 				errors.add(message);
 			}
 			
-			return ResponseEntity.badRequest().body(errors);
+			return ResponseEntity.badRequest().body(String.join("\n", errors));
 		}
 		
 		//ユーザー登録

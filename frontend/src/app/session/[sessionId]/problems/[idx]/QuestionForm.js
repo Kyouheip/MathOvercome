@@ -3,8 +3,8 @@
 import {useState} from 'react'
 import { useRouter } from 'next/navigation'
 
-export default function QuestionForm({sessionId,idx,sessProbId,choices,total}){
-    const [selectedId,setSelectedId] = useState(null);
+export default function QuestionForm({sessionId,idx,choices,initialselectedId,total}){
+    const [selectedId,setSelectedId] = useState(initialselectedId ?? null);
     const router = useRouter();
     const [error,setError] = useState(null);
 
@@ -12,11 +12,8 @@ export default function QuestionForm({sessionId,idx,sessProbId,choices,total}){
         //formを使うときは必要。ないとリロードされReactが無視される
         e.preventDefault();
 
-        if(!selectedId){
-            alert("選択肢を選んでください")
-            return;
-        }
         try{
+            //選択肢を送る
         const res = await fetch(
             `${process.env.NEXT_PUBLIC_API_URL}/session/${sessionId}/problems/${idx}/answer`,
             {
@@ -83,8 +80,12 @@ export default function QuestionForm({sessionId,idx,sessProbId,choices,total}){
             }
            </div>
 
-            <button type="submit" className="btn btn-primary me-2">次へ</button>
-            <button type="button" className="btn btn-secondary" onClick={handleBack}>戻る</button>
-        </form>
+            <div className="mt-4">
+                {Number(idx) > 0 && (
+                    <button type="button" className="btn btn-secondary me-2" onClick={handleBack}>戻る</button>
+                )}
+                <button type="submit" className="btn btn-primary">次へ</button>
+            </div>
+         </form>
     );
 }

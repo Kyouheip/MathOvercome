@@ -48,7 +48,6 @@ export default function RegisterPage(){
                 className="form-control" //css
                 value={userId}
                 onChange={e => setUserId(e.target.value)}
-                required
               />
               </div>
 
@@ -60,7 +59,6 @@ export default function RegisterPage(){
                     className="form-control"
                     value={userName}
                     onChange={e => setUserName(e.target.value)}
-                    required
                 />
               </div>
             
@@ -72,7 +70,6 @@ export default function RegisterPage(){
                     className="form-control"
                     value={password1}
                     onChange={e => setPassword1(e.target.value)}
-                    required
                 />
               </div>
               
@@ -84,11 +81,10 @@ export default function RegisterPage(){
                     className="form-control"
                     value={password2}
                     onChange={e => setPassword2(e.target.value)}
-                    required
                 />
               </div>
               
-            {error && <p className="text-danger">{error}</p>}
+            {error && <pre className="text-danger">{error}</pre>}
 
             <button type="submit" className="btn btn-primary me-2">登録</button>
             <button type="button" className="btn btn-secondary" onClick={handleBack}>戻る</button>
