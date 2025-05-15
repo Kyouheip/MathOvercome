@@ -3,10 +3,14 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import CreateSession from './CreateSession';
+import ErrorMessage from '@/components/ErrorMessage';
+import { useErrorHandler } from "@/hooks/useErrorHandler"
+
 
 export default function Mypage(){
     const [user, setUser] = useState(null);
     const [error,setError] = useState(null);
+    const errorHandler = useErrorHandler(setError);
 
     useEffect(() => {
     const fetchUser = async () => {
@@ -16,15 +20,7 @@ export default function Mypage(){
           credentials: "include",
         });
 
-     if(res.status === 401){
-                setError("セッションが切れたか不正なアクセスです。ログインし直してください。");
-                return ;
-     }
-    
-    if (!res.ok) {
-                setError(`エラーが発生しました。: ${res.status}`);
-                return;
-     }
+     if (!errorHandler(res)) return;
 
      const data = await res.json();
           setUser(data);
@@ -38,14 +34,7 @@ export default function Mypage(){
     //fetchUser();
     },[]);
 
-if (error) {
-        return (
-          <div>
-            <p>{error}</p>
-            <p><a href="/login">ログインページへ</a></p>
-          </div>
-        );
-      }
+  if (error) return <ErrorMessage error={error} />;
 
     //  if(!user) return <p>読み込み中...</p>;
 

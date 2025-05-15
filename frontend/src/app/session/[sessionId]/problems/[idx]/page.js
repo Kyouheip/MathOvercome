@@ -2,12 +2,16 @@
 "use client"
 import { useEffect, useState} from "react";
 import QuestionForm from './QuestionForm';
+import ErrorMessage from '@/components/ErrorMessage';
+import { useErrorHandler } from "@/hooks/useErrorHandler"
 
 export default function ProblemPage({params}){
     const {sessionId,idx}=params;
     const [sp, setSp] = useState(null);
     const [error, setError] = useState(null);
     const [showHint, setShowHint] = useState(false);
+    const errorHandler = useErrorHandler(setError);
+
 
     useEffect(() => {
         const load = async () => {
@@ -17,15 +21,7 @@ export default function ProblemPage({params}){
             credentials: "include",
             });
 
-            if(res.status === 401){
-                setError("セッションが切れたか不正なアクセスです。ログインし直してください。");
-                return ;
-            }
-
-            if (!res.ok) {
-                setError(`エラーが発生しました。: ${res.status}`);
-                return;
-              }
+            if (!errorHandler(res)) return;
 
             const data = await res.json();
             setSp(data);
@@ -39,14 +35,7 @@ export default function ProblemPage({params}){
         load();
     },[idx]);
 
-    if (error) {
-        return (
-          <div>
-            <p>{error}</p>
-            <p><a href="/login">ログインページへ</a></p>
-          </div>
-        );
-      }
+    if (error) return <ErrorMessage error={error} />
       
     if(!sp) return <p>読み込み中...</p>;
 

@@ -2,11 +2,14 @@
 'use client'
 import {useState} from 'react'
 import { useRouter } from 'next/navigation'
+import { useErrorHandler } from "@/hooks/useErrorHandler"
+import ErrorMessage from '@/components/ErrorMessage';
 
 export default function QuestionForm({sessionId,idx,choices,initialselectedId,total}){
     const [selectedId,setSelectedId] = useState(initialselectedId ?? null);
     const router = useRouter();
     const [error,setError] = useState(null);
+    const errorHandler = useErrorHandler(setError);
 
     const submit = async (e) => {
         //formを使うときは必要。ないとリロードされReactが無視される
@@ -24,15 +27,8 @@ export default function QuestionForm({sessionId,idx,choices,initialselectedId,to
             }
         );
 
-        if(res.status === 401){
-            setError("セッションが切れたか不正なアクセスです。ログインし直してください。");
-            return ;
-        }
+       if (!errorHandler(res)) return;
 
-        if(!res.ok){
-            setError(`送信に失敗しました(${res.status})`);
-            return ;
-        }
         }catch (e) {
              setError("通信エラーが発生しました");
              return ;
@@ -49,14 +45,7 @@ export default function QuestionForm({sessionId,idx,choices,initialselectedId,to
         router.back();
     }
 
-    if (error) {
-        return (
-          <div>
-            <p>{error}</p>
-            <p><a href="/login">ログインページへ</a></p>
-          </div>
-        );
-      }
+    if (error) return <ErrorMessage error={error} />;
 
     return(
         <form onSubmit={submit}>

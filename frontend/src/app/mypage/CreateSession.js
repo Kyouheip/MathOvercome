@@ -2,11 +2,16 @@
 'use client'
 import {useRouter} from 'next/navigation';
 import {useState} from 'react';
+import ErrorMessage from '@/components/ErrorMessage';
+import { useErrorHandler } from "@/hooks/useErrorHandler"
+
 
 export default function CreateSession(){
     const [includeIntegers,setIncludeIntegers] = useState(false);
     const [error,setError] = useState(null);
     const router = useRouter();
+    const errorHandler = useErrorHandler(setError);
+
 
     const startTest = async () => {
       try{
@@ -19,15 +24,7 @@ export default function CreateSession(){
 
         );
         
-        if(res.status === 401){
-            setError("セッションが切れたか不正なアクセスです。ログインし直してください。");
-            return ;
-        }
-
-        if(!res.ok){
-            setError(`送信に失敗しました(${res.status})`);
-            return ;
-        }
+       if (!errorHandler(res)) return;
         
         const session = await res.json();
         const idx = 0;
@@ -38,14 +35,8 @@ export default function CreateSession(){
       }
     };
 
-    if (error) {
-        return (
-          <div>
-            <p>{error}</p>
-            <p><a href="/login">ログインページへ</a></p>
-          </div>
-        );
-      }
+   if (error) return <ErrorMessage error={error} />;
+
 
     return(
         <div className="container mt-4">
