@@ -30,7 +30,7 @@
 # ----------------------------------------------------------------------------
 
 set -euf
-[ "${MVNW_VERBOSE-}" !=debug ] || set -x
+[ "${MVNW_VERBOSE-}" != debug ] || set -x
 
 # OS specific support.
 native_path() { printf %s\\n "$1"; }
@@ -180,7 +180,7 @@ fi
 
 # verbose opt
 __MVNW_QUIET_WGET=--quiet __MVNW_QUIET_CURL=--silent __MVNW_QUIET_UNZIP=-q __MVNW_QUIET_TAR=''
-[ "${MVNW_VERBOSE-}" != true ] || __MVNW_QUIET_WGET='' __MVNW_QUIET_CURL='' __MVNW_QUIET_UNZIP='' __MVNW_QUIET_TAR='v'
+[ "${MVNW_VERBOSE-}" != true ] || __MVNW_QUIET_WGET='' __MVNW_QUIET_CURL='' __MVNW_QUIET_UNZIP='' __MVNW_QUIET_TAR=v
 
 # normalize http auth
 case "${MVNW_PASSWORD:+has-password}" in
@@ -239,7 +239,7 @@ if [ -n "${distributionSha256Sum-}" ]; then
     echo "Please install either command, or disable validation by removing 'distributionSha256Sum' from your maven-wrapper.properties." >&2
     exit 1
   fi
-  if [ "$distributionSha256Result" = false ]; then
+  if [ $distributionSha256Result = false ]; then
     echo "Error: Failed to validate Maven distribution SHA-256, your Maven distribution might be compromised." >&2
     echo "If you updated your Maven version, you need to update the specified distributionSha256Sum property." >&2
     exit 1
