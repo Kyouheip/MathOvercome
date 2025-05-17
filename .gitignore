@@ -10,3 +10,5 @@ frontend/node_modules/
 /.classpath
 /.project
 /.settings/
+
+backend/mvnw text eol=lf
