@@ -26,7 +26,13 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/auth")
 //クロスオリジン設定 Cookieが送信される
-@CrossOrigin(origins = "http://localhost:3000",allowCredentials = "true")
+@CrossOrigin(
+	    origins = {
+	        "http://localhost:3000",
+	        "https://math-overcome.vercel.app"
+	    },
+	    allowCredentials = "true"
+	)
 @RequiredArgsConstructor
 public class LoginController {
 	

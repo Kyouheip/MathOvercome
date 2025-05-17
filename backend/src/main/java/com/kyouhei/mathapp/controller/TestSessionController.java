@@ -36,7 +36,13 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/session")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000",allowCredentials = "true")
+@CrossOrigin(
+	    origins = {
+	        "http://localhost:3000",
+	        "https://math-overcome.vercel.app"
+	    },
+	    allowCredentials = "true"
+	)
 public class TestSessionController {
 
 	private final TestSessionService testSessService;
