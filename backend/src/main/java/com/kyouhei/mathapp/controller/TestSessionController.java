@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.kyouhei.mathapp.dao.SessionProblemDao;
 import com.kyouhei.mathapp.dto.AnswerRequest;
 import com.kyouhei.mathapp.dto.ChoiceDto;
 import com.kyouhei.mathapp.dto.SessionProblemDto;
@@ -42,6 +43,7 @@ public class TestSessionController {
 	private final ChoiceRepository choiceRepo;
 	private final SessionProblemRepository sessProbRepo;
 	private final TestSessionRepository testSessRepo;
+	private final SessionProblemDao sessProbDao;
 	//セッション作成
 	@PostMapping("/test")
 	public ResponseEntity<TestSessionDto> createTestSess(
@@ -65,6 +67,8 @@ public class TestSessionController {
 			  				HttpSession session){
 	
 		User user = (User)session.getAttribute("user");
+		
+		//
 		Optional<TestSession> someTestSess = 
 				testSessRepo.findById(sessionId);
 		
@@ -79,16 +83,23 @@ public class TestSessionController {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 		}
 		
-		List<SessionProblem> sps = testSessService.getSessionProblems(sessionId);
+		int total = sessProbDao.countBySessionId(sessionId);
 		
-		if (idx < 0 || idx >=  sps.size()) {
+		if (idx < 0 || idx >= total) {
 	        //idxが範囲外 → 400
 	        return ResponseEntity.badRequest().build();
 	    }
 		
 		//ログインIDと一致。通常処理 →200
 		//DTOマッピング
-		SessionProblem sp = sps.get(idx);
+		Optional<SessionProblem> someSessProb = sessProbDao.findByIdx(sessionId,idx);
+		
+		if (someSessProb.isEmpty()) {
+		    return ResponseEntity.notFound().build();
+		}
+
+		SessionProblem sp = someSessProb.get();
+		
 		List<ChoiceDto> choiceDtos = new ArrayList<>();
 	  
 		List<Choice> choices = sp.getProblem().getChoices();
@@ -110,7 +121,7 @@ public class TestSessionController {
 			  					choiceDtos,
 			  					sp.getProblem().getHint(),
 			  					selectedChoiceId,
-			  					sps.size());
+			  					total);
 			  
 		return ResponseEntity.ok(spDto);
 	  }
