@@ -29,13 +29,18 @@ public class LoginCheckFilter implements Filter{
 		HttpServletRequest req = (HttpServletRequest)request;
 		HttpServletResponse res = (HttpServletResponse)response;
 		
-		//?クロスオリジン設定がないのでFilter内でつける?
-		res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+		//クロスオリジン設定がないのでFilter内でつける?
+		String origin = req.getHeader("Origin");
+
+		if ("http://localhost:3000".equals(origin) || "https://math-overcome.vercel.app".equals(origin)) {
+		    res.setHeader("Access-Control-Allow-Origin", origin);
+		}
+
 		res.setHeader("Access-Control-Allow-Credentials", "true");
 		res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
 		res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 		
-		// ?OPTIONSリクエストは許可して終了？
+		// OPTIONSリクエストは許可して終了？
 	    if ("OPTIONS".equalsIgnoreCase(req.getMethod())) {
 	        res.setStatus(HttpServletResponse.SC_OK);
 	        return;
