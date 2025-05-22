@@ -46,8 +46,6 @@ public class LoginController {
 				@RequestBody @Validated LoginRequest req,
 				BindingResult result){
 		
-		System.out.println("【ログ】ログインPOSTリクエスト受信！");
-		
 		//バリデーション & 認証チェック
 		if(result.hasErrors()|| !loginService.isValid(req,result)) {
 			List<String> errors = new ArrayList<>();

@@ -21,7 +21,8 @@ import com.kyouhei.mathapp.dao.SessionProblemDao;
 import com.kyouhei.mathapp.dto.AnswerRequest;
 import com.kyouhei.mathapp.dto.ChoiceDto;
 import com.kyouhei.mathapp.dto.SessionProblemDto;
-import com.kyouhei.mathapp.dto.TestSessionDto;
+import com.kyouhei.mathapp.dto.TestSessionCreateDto;
+import com.kyouhei.mathapp.dto.UserDto;
 import com.kyouhei.mathapp.entity.Choice;
 import com.kyouhei.mathapp.entity.SessionProblem;
 import com.kyouhei.mathapp.entity.TestSession;
@@ -29,6 +30,7 @@ import com.kyouhei.mathapp.entity.User;
 import com.kyouhei.mathapp.repository.ChoiceRepository;
 import com.kyouhei.mathapp.repository.SessionProblemRepository;
 import com.kyouhei.mathapp.repository.TestSessionRepository;
+import com.kyouhei.mathapp.service.MypageService;
 import com.kyouhei.mathapp.service.TestSessionService;
 
 import lombok.RequiredArgsConstructor;
@@ -50,16 +52,18 @@ public class TestSessionController {
 	private final SessionProblemRepository sessProbRepo;
 	private final TestSessionRepository testSessRepo;
 	private final SessionProblemDao sessProbDao;
+	private final MypageService mypageService;
+	
 	//セッション作成
 	@PostMapping("/test")
-	public ResponseEntity<TestSessionDto> createTestSess(
+	public ResponseEntity<TestSessionCreateDto> createTestSess(
 				@RequestParam(defaultValue = "false") boolean includeIntegers,
 				HttpSession session) {
 		
 	  User user = (User)session.getAttribute("user");
 	  TestSession testSess =  testSessService.createTestSess(user, includeIntegers);
 	  //DTOマッピング
-	  TestSessionDto dto = new TestSessionDto();
+	  TestSessionCreateDto dto = new TestSessionCreateDto();
 	  dto.setId(testSess.getId());
 	    
 	  return ResponseEntity.status(HttpStatus.CREATED).body(dto);
@@ -178,7 +182,12 @@ public class TestSessionController {
 	}
 	
 	//マイページへ送るデータ
-	//@GetMapping("/mypage")
+	@GetMapping("/mypage")
+	public ResponseEntity<UserDto> getMypage(HttpSession session){
+		User user = (User) session.getAttribute("user");
+		UserDto userDto = mypageService.getUserData(user);
+		return ResponseEntity.ok(userDto);
+	}
 
 	  
 	

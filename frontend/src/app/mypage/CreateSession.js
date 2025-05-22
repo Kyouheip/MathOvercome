@@ -39,8 +39,9 @@ export default function CreateSession(){
 
 
     return(
-        <div className="container mt-4">
-            <h2 className="mb-3">新規テスト開始</h2>
+        <div className="mb-5">
+           <div className="bg-secondary text-white p-4 rounded mb-5">
+            <h2 className="mb-3 text-dark">【数IA新規テスト】</h2>
             <div className="form-check mb-3">
               <input 
                 type="checkbox"
@@ -53,7 +54,17 @@ export default function CreateSession(){
                 整数分野も問題に含める
               </label>
             </div>
+
             <button className="btn btn-primary" onClick={startTest}>テスト開始</button>
+      
+            <p className="mt-2" style={{ fontSize: "0.9rem" }}>
+              ※ 共通テストの数IAでは整数分野は出題されません。
+            </p>
+          </div>
+
+            <p className="text-white" style={{ fontSize: "1.2rem" }}>
+               数IIBC、数IIIは現在準備中です。
+            </p>
         </div>
     );
 }
