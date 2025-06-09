@@ -28,7 +28,7 @@
 - フロントエンド: Next.js 15.3.1
 - バックエンド: Spring Boot 3.4.5
 - データベース: MySQL 8.0.41
-- デプロイ: Vercel / Railway / Railway
+- デプロイ: Vercel / Render / Railway
 - その他: 
    - Spring Data JPA  
    - Bootstrap 5.3.0
