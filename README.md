@@ -30,6 +30,7 @@
 - データベース: MySQL 8.0.41
 - デプロイ: Vercel / Render / Railway
 - その他: 
+   - Docker Compose
    - Spring Data JPA  
    - Bootstrap 5.3.0
 
@@ -58,15 +59,55 @@
 
 ![ER図](./docs/er-diagram.png)
 
-## 使い方
+## 🚀 使い方（ローカル実行）
 
-1. このリポジトリをクローン  
-2. `frontend` フォルダで `npm install && npm run dev` を実行  
-3. `backend` フォルダで `./mvnw spring-boot:run` を実行  
+本アプリは Docker Compose を使って、  
+フロントエンド・バックエンド・データベースを **一括で自動構築** できます。  
+PC にDockerがインストールされていれば、セットアップは数分で完了します。
+※ ローカルに MySQL をインストールする必要はありません。
 
-※ MySQLの設定が必要です。  
-※ また、アプリの正常な動作には `problems` および `choices` テーブルに初期データが登録されている必要があります。  
+---
 
-現在は初期データの投入機能を準備中のため、**今すぐローカルでの動作確認は難しい場合があります**。  
-そのため、完成版のデプロイ公開をお待ちいただくことをおすすめします。
+### 1. リポジトリをクローン
+
+```bash
+git clone https://github.com/Kyouheip/MathOvercome.git
+cd MathOvercome
+```
+
+---
+
+### 2. Docker Compose で起動
+
+```bash
+docker compose up -d
+```
+
+※ 初回起動時のみ、`db/init.sql` に含まれる  
+**カテゴリ / 問題 / 選択肢 / デモユーザー** の初期データが自動投入されます。
+2 回目以降は既存のデータベースをそのまま利用して起動します。
+---
+
+### 3. ブラウザでアクセス
+
+http://localhost:3000
+
+---
+
+## 👤 デモユーザー（すぐにログインできます）
+
+| 項目 | 値 |
+|------|-----|
+| **ユーザーID** | `test` |
+| **パスワード** | `pass` |
+
+※ アプリ内から **新規ユーザー登録** も可能です。
+
+---
+
+## 🛑 停止する場合
+
+```bash
+docker compose down
+```
 
