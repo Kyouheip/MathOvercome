@@ -34,6 +34,10 @@
    - Spring Data JPA  
    - Bootstrap 5.3.0
 
+## ドキュメント
+
+- [アーキテクチャ進化の記録](./docs/architecture-evolution.md)
+
 ## 主な機能
 - ユーザー登録 / ログイン機能
 - 数学の問題を分野ごとに出題
