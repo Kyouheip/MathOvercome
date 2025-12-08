@@ -12,11 +12,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-import org.springframework.stereotype.Component;
-
 import com.kyouhei.mathapp.entity.User;
 
-@Component
+
 public class LoginCheckFilter implements Filter{
 
 	@Override
