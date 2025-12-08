@@ -29,7 +29,8 @@ import lombok.RequiredArgsConstructor;
 @CrossOrigin(
 	    origins = {
 	        "http://localhost:3000",
-	        "https://math-overcome.vercel.app"
+	        "https://math-overcome.vercel.app",
+	        "http://52.68.88.3"
 	    },
 	    allowCredentials = "true"
 	)
