@@ -32,7 +32,9 @@ public class LoginCheckFilter implements Filter{
 		//クロスオリジン設定がないのでFilter内でつける?
 		String origin = req.getHeader("Origin");
 
-		if ("http://localhost:3000".equals(origin) || "https://math-overcome.vercel.app".equals(origin)) {
+		if ("http://localhost:3000".equals(origin) 
+			|| "https://math-overcome.vercel.app".equals(origin)
+			|| "http://52.68.88.3".equals(origin)) {
 		    res.setHeader("Access-Control-Allow-Origin", origin);
 		}
 
