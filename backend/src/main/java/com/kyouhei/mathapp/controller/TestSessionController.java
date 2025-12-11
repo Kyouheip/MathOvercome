@@ -186,6 +186,9 @@ public class TestSessionController {
 	@GetMapping("/mypage")
 	public ResponseEntity<UserDto> getMypage(HttpSession session){
 		User user = (User) session.getAttribute("user");
+		System.out.println("mypage セッションID: " + session.getId());
+		System.out.println("mypage user: " + user);
+		
 		UserDto userDto = mypageService.getUserData(user);
 		return ResponseEntity.ok(userDto);
 	}
