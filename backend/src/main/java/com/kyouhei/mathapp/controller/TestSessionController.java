@@ -186,14 +186,15 @@ public class TestSessionController {
 	@GetMapping("/mypage")
 	public ResponseEntity<?> getMypage(HttpSession session){
 		User user = (User) session.getAttribute("user");
+
+		System.out.println("mypage セッションID: " + session.getId());
+		System.out.println("mypage user: " + user);
 		
 		//セッションチェックテスト
 		  if (user == null) {
 		        return ResponseEntity.status(401).body("NOT_LOGIN");
 		    }
-		System.out.println("mypage セッションID: " + session.getId());
-		System.out.println("mypage user: " + user);
-		
+	
 		UserDto userDto = mypageService.getUserData(user);
 		return ResponseEntity.ok(userDto);
 	}
