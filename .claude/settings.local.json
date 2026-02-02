@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find:*)",
+      "Bash(ls:*)",
+      "Bash(grep:*)",
+      "Bash(wsl -e bash:*)",
+      "Bash(wsl bash -lc \"cd /home/kyouhei/MathOvercome/frontend && npm run build\")"
+    ]
+  }
+}

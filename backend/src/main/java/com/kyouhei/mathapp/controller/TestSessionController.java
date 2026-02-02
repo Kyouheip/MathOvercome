@@ -21,7 +21,6 @@ import com.kyouhei.mathapp.dao.SessionProblemDao;
 import com.kyouhei.mathapp.dto.AnswerRequest;
 import com.kyouhei.mathapp.dto.ChoiceDto;
 import com.kyouhei.mathapp.dto.SessionProblemDto;
-import com.kyouhei.mathapp.dto.TestSessionCreateDto;
 import com.kyouhei.mathapp.dto.UserDto;
 import com.kyouhei.mathapp.entity.Choice;
 import com.kyouhei.mathapp.entity.SessionProblem;
@@ -57,28 +56,38 @@ public class TestSessionController {
 	
 	//セッション作成
 	@PostMapping("/test")
-	public ResponseEntity<TestSessionCreateDto> createTestSess(
+	public ResponseEntity<Void> createTestSess(
 				@RequestParam(defaultValue = "false") boolean includeIntegers,
 				HttpSession session) {
 		
 	  User user = (User)session.getAttribute("user");
+	  
+	  if (user == null) {
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	    }
+	  
 	  TestSession testSess =  testSessService.createTestSess(user, includeIntegers);
-	  //DTOマッピング
-	  TestSessionCreateDto dto = new TestSessionCreateDto();
-	  dto.setId(testSess.getId());
-	    
-	  return ResponseEntity.status(HttpStatus.CREATED).body(dto);
+	  
+	  session.setAttribute("currentSessionId", testSess.getId());
+	  
+	  return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 
 	//1問ずつ問題表示
-	@GetMapping("/{sessionId}/problems/{idx}")
+	@GetMapping("/current/problems/{idx}")
 	public ResponseEntity<SessionProblemDto> viewOneProblem(
-			  				@PathVariable Long sessionId,
 			  				@PathVariable int idx,
 			  				HttpSession session){
 	
 		User user = (User)session.getAttribute("user");
+		if (user == null) 
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		
+		 Long sessionId = (Long) session.getAttribute("currentSessionId");
+		    if (sessionId == null) 
+		    	return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+
+		    
 		//
 		Optional<TestSession> someTestSess = 
 				testSessRepo.findById(sessionId);
@@ -138,15 +147,20 @@ public class TestSessionController {
 	  }
 		  
 	//解答を受けとり次の問題へ
-	@PostMapping("/{sessionId}/problems/{idx}/answer")
+	@PostMapping("/current/problems/{idx}/answer")
 	public ResponseEntity<Void> submitAndNext(
-			  @PathVariable Long sessionId,
 			  @PathVariable int idx,
 			  @RequestBody AnswerRequest req,
 			  HttpSession session){
 		  
 		User user = (User)session.getAttribute("user");
+		 if (user == null) 
+			 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		
+		 Long sessionId = (Long) session.getAttribute("currentSessionId");
+		    if (sessionId == null) 
+		    	return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+		    
 		Optional<TestSession> someTestSess = 
 				testSessRepo.findById(sessionId);
 		

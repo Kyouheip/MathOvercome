@@ -45,8 +45,12 @@
 - セッション保持によるログイン状態管理
 
 ## 工夫した点
-- HTMLを返していたエンドポイントをJSONに変更し、RESTfulなAPI設計にリファクタリング
-- Repository層でEntityを取得し、DTOに変換して返却する一般的な構成を採用（Controller-Service-Repositoryの分離）
+- HTML を返却する構成から、JSON ベースの API に切り替え、
+  フロントエンドとバックエンドを分離した設計に変更
+- Controller・Service・Repository の責務を分離し、
+  API では DTO を返却する構成とした
+- SSG による静的配信（S3 + CloudFront）を考慮し、動的パスを廃して
+  `idx` はクエリパラメータ、`sessionId` はバックエンド側で管理する設計に変更
 - パフォーマンスが課題となる処理には、JPAではなくネイティブSQLを活用して高速化
 - サーブレットフィルター（`LoginCheckFilter`）によって未ログインユーザーのリクエストをブロック
 - 認可チェックとしてユーザーIDの照合により、他人のセッション情報を閲覧・操作できないよう制御

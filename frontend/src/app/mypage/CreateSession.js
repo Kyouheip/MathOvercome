@@ -18,7 +18,7 @@ export default function CreateSession(){
         const res = await fetch(
             `${process.env.NEXT_PUBLIC_API_URL}/session/test?includeIntegers=${includeIntegers}`,
             {
-            method: 'post',
+            method: 'POST',
             credentials: 'include',
             }
 
@@ -26,9 +26,8 @@ export default function CreateSession(){
         
        if (!errorHandler(res)) return;
         
-        const session = await res.json();
-        const idx = 0;
-        router.push(`/session/${session.id}/problems/${idx}`);
+        router.push(`/problems?idx=0`);
+
       }catch (e) {
         setError("通信エラーが発生しました");
              return ;
