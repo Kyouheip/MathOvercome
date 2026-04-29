@@ -17,7 +17,7 @@
 
 [https://math-overcome.vercel.app](https://math-overcome.vercel.app)
 
-> [!WARNING]
+> [!CAUTION]
 > **【お知らせ】**
 > 本アプリは旧ポートフォリオであり、リプレースのため**現在はサーバーを停止しております。**
 
