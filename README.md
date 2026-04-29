@@ -17,6 +17,9 @@
 
 [https://math-overcome.vercel.app](https://math-overcome.vercel.app)
 
+> **【お知らせ】**
+> 本アプリは旧ポートフォリオであり、リプレースのため**現在はサーバーを停止しております。**
+
 このURLからアプリを体験できますが、以下の点にご注意ください：
 
 - このアプリは無料のホスティングサービス（Render, Vercel）を使用しているため、初回アクセス時にサーバーの起動に数十秒かかることがあります。
@@ -34,9 +37,6 @@
    - Spring Data JPA  
    - Bootstrap 5.3.0
 
-## ドキュメント
-
-- [アーキテクチャ進化の記録](./docs/architecture-evolution.md)
 
 ## 主な機能
 - ユーザー登録 / ログイン機能
